@@ -76,12 +76,22 @@ h1,h2,h3,h4{font-family:'Fredoka',sans-serif}
 .logo-brand:hover .brand-logo-img {
   transform: scale(1.05);
 }
+.brand-name {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--text);
+}
+
 .arabic-brand-title {
   font-family: 'Cairo', sans-serif;
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 800;
   color: var(--teal);
-  margin-left: 4px;
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
 }
 .lang-toggle-btn {
   display: inline-flex;
@@ -126,12 +136,15 @@ h1,h2,h3,h4{font-family:'Fredoka',sans-serif}
   overflow: hidden;
 }
 .logo-title {
-  font-family: 'Fredoka', sans-serif;
-  font-size: 19px;
+  font-family: 'Fredoka', 'Cairo', sans-serif;
+  font-size: 14.5px;
   font-weight: 700;
-  color: var(--text);
-  line-height: 1.15;
-  white-space: nowrap;
+  line-height: 1.2;
+  white-space: normal;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1px 6px;
 }
 .logo-subtitle {
   font-size: 11px;
@@ -3005,7 +3018,7 @@ html[dir="rtl"] .logo-brand {
 
 html[dir="rtl"] .arabic-brand-title {
   margin-left: 0;
-  margin-right: 4px;
+  margin-right: 0;
 }
 
 html[dir="rtl"] #sidebar nav a {

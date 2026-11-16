@@ -1,6 +1,6 @@
 {
   "name": "Spark",
-  "description": "منصة سبارك للتعلم والتركيز والعلوم وإعادة الصياغة الإدراكية — Spark: Learning, Focus, Science & Cognitive Reframing Platform",
+  "description": "منصة طالب القبس للتعلم والتركيز والعلوم وإعادة الصياغة الإدراكية — Talib Al Qabas: Learning, Focus, Science & Cognitive Reframing Platform",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

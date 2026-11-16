@@ -637,7 +637,7 @@ const Store={
             startTime: '16:00',
             endTime: '17:00',
             location: 'Study Desk',
-            notes: 'ADHD focus block: lo-fi noise & Spark timer'
+            notes: 'ADHD focus block: lo-fi noise & Talib Al Qabas timer'
           },
           {
             id: 'evt_sports',
@@ -665,7 +665,7 @@ const Store={
             steps: [
               'Drink a full glass of water',
               'Check backpack & materials for today',
-              'Review today’s timetable on Spark'
+              'Review today’s timetable on Talib Al Qabas'
             ]
           },
           {
@@ -691,7 +691,7 @@ const Store={
             color: '#8B5CF6',
             days: [1, 2, 3, 4, 5, 6, 0],
             steps: [
-              'Review 10 flashcards on Spark',
+              'Review 10 flashcards on Talib Al Qabas',
               'Check tomorrow’s schedule & prep clothes',
               'Disconnect screens 30m before sleep'
             ]
@@ -832,9 +832,9 @@ function currentLang() {
 
 const I18N = {
   en: {
-    appName: 'Spark',
-    appFullName: 'Spark — Learning, Focus & Cognitive Platform',
-    brandTitle: 'Spark',
+    appName: 'Talib Al Qabas',
+    appFullName: 'Talib Al Qabas — Learning, Focus & Cognitive Platform',
+    brandTitle: 'Talib Al Qabas',
     brandSub: 'Learn & Focus',
     nav_dashboard: 'Dashboard',
     nav_focus: 'Focus Lab',
@@ -869,9 +869,9 @@ const I18N = {
     more: "More"
   },
   ar: {
-    appName: 'سبارك',
-    appFullName: 'سبارك — منصة التعلّم والتركيز والعلوم وإعادة الصياغة الإدراكية',
-    brandTitle: 'سبارك',
+    appName: 'طالب القبس',
+    appFullName: 'طالب القبس — منصة التعلّم والتركيز والعلوم وإعادة الصياغة الإدراكية',
+    brandTitle: 'طالب القبس',
     brandSub: 'منصة التعلّم والتركيز',
     nav_dashboard: 'لوحة التحكم',
     nav_focus: 'مختبر التركيز',
@@ -961,7 +961,7 @@ function setLanguage(lang) {
     localizeDOM(document.body);
   }
 
-  toast(isAr ? 'تم تفعيل واجهة سبارك باللغة العربية (RTL)' : 'Spark interface switched to English', 'info');
+  toast(isAr ? 'تم تفعيل واجهة طالب القبس باللغة العربية (RTL)' : 'Talib Al Qabas interface switched to English', 'info');
 }
 
 function toggleLanguage() {
@@ -996,7 +996,7 @@ const VIEW_INFO = {
 
 function updateTopBar() {
   const isAr = currentLang() === 'ar';
-  const info = VIEW_INFO[currentView] || { title: 'Spark', titleAr: 'سبارك', icon: 'fa-bolt' };
+  const info = VIEW_INFO[currentView] || { title: 'Talib Al Qabas', titleAr: 'طالب القبس', icon: 'fa-bolt' };
   const iconEl = document.getElementById('topbar-view-icon');
   const titleEl = document.getElementById('topbar-view-title');
   if (iconEl) iconEl.innerHTML = `<i class="fas ${info.icon}"></i>`;
@@ -4117,10 +4117,10 @@ function renderSettings(){
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
         <div>
           <h1 style="font-size:26px;font-weight:700;margin-bottom:4px">${isAr ? 'الإعدادات والتخصيص' : 'Settings & Preferences'}</h1>
-          <p style="color:var(--text2);">${isAr ? 'تخصيص تجربة التعلّم ومنصة سبارك بالكامل.' : 'Customize your Spark learning environment.'}</p>
+          <p style="color:var(--text2);">${isAr ? 'تخصيص تجربة التعلّم ومنصة طالب القبس بالكامل.' : 'Customize your Talib Al Qabas learning environment.'}</p>
         </div>
         <div class="tag" style="background:rgba(78,205,196,0.15);color:var(--teal);padding:6px 12px;font-weight:700;">
-          <i class="fas fa-bolt"></i> ${isAr ? 'منصة سبارك' : 'Spark Platform'}
+          <i class="fas fa-bolt"></i> ${isAr ? 'منصة طالب القبس' : 'Talib Al Qabas Platform'}
         </div>
       </div>
 
@@ -4264,7 +4264,7 @@ function toggleStrict(){const s=Store.get('settings');s.strictMode=!s.strictMode
 function saveProfile(){const n=document.getElementById('set-name').value.trim();if(!n){toast('Please enter your name','warn');return;}const g=document.querySelector('#view-settings .grade-pill.selected[data-val]'),gr=g?parseInt(g.dataset.val):2,c=document.querySelector('.color-opt.selected'),cl=c?c.dataset.color:'#FF8C42';Store.set('user',{name:n,grade:gr,color:cl});updateUserPanel();toast('Profile saved!','success');SFX.click();}
 function saveWhitelist(){const t=document.getElementById('whitelist-input').value,w=t.split('\n').map(s=>s.trim().toLowerCase()).filter(s=>s&&!s.startsWith('//')&&!s.startsWith('#'));Store.get('settings').whitelist=w;Store.save();genBookmarklet();toast('Whitelist updated!','success');}
 function genBookmarklet(){const w=JSON.stringify(Store.get('settings').whitelist),u=location.href.split('#')[0]+'#focus',c=`javascript:void((function(){var w=${w},h=location.hostname.toLowerCase(),ok=w.some(function(d){return h.indexOf(d)!==-1});if(!ok){location.href='${u}';}else{var m=document.createElement('div');m.style.cssText='position:fixed;top:20px;right:20px;z-index:99999;padding:12px 20px;background:#1C1C2A;color:#4ECDC4;border-radius:10px;font-family:sans-serif;font-size:14px;font-weight:bold;box-shadow:0 8px 25px rgba(0,0,0,0.5)';m.textContent='\\u2713 Productive site. Keep going!';document.body.appendChild(m);setTimeout(function(){m.remove()},2000);}})())`;const l=document.getElementById('bookmarklet-link');if(l)l.href=c;}
-function exportData(){const b=new Blob([JSON.stringify(Store._d,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='spark-data.json';a.click();toast('Data exported!','success');}
+function exportData(){const b=new Blob([JSON.stringify(Store._d,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='talib-al-qabas-data.json';a.click();toast('Data exported!','success');}
 function clearData(){showModal(`<h2 style="font-size:20px;margin-bottom:10px">Clear All Data?</h2><p style="color:var(--text2);margin-bottom:20px">This cannot be undone. Includes flashcard decks stored in IndexedDB.</p><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn" style="background:var(--red);color:#fff" onclick="localStorage.removeItem('spark_data');localStorage.removeItem('spark_sticky_notes');localStorage.removeItem('sticky_notes');localStorage.removeItem('stickyNotes');localStorage.removeItem('spark_sticky_notes_visible');localStorage.removeItem('sticky_notes_visible');localStorage.removeItem('spark_sticky_notes_highest_z');localStorage.removeItem('sticky_notes_highest_z');Store.load();FlashDB.clearAll().catch(()=>{});cleanupFlash();closeModal();showOnboarding();renderStickyNotes();toast('All data cleared','info')">Delete Everything</button></div>`);}
 
 // ======================== UNIFIED MATH RENDERER (KATEX) & MATHEMATICAL SUITE ========================
@@ -8641,7 +8641,7 @@ function applySchedulePreset(type) {
   if (type === 'exam') {
     Store.set('scheduleEvents', [
       { id: 'evt_rev1', title: 'Subject 1 Practice Exam', category: 'Exam', color: '#FF8C42', days: [1, 3, 5], startTime: '09:00', endTime: '11:00', location: 'Quiet Room' },
-      { id: 'evt_rev2', title: 'Flashcards & Memory Review', category: 'Study', color: '#A855F7', days: [1, 2, 3, 4, 5], startTime: '14:00', endTime: '15:00', location: 'Spark Desk' },
+      { id: 'evt_rev2', title: 'Flashcards & Memory Review', category: 'Study', color: '#A855F7', days: [1, 2, 3, 4, 5], startTime: '14:00', endTime: '15:00', location: 'Talib Al Qabas Desk' },
       { id: 'evt_rev3', title: 'Problem Sets & Formula Practice', category: 'Study', color: '#3B82F6', days: [2, 4], startTime: '16:00', endTime: '17:30', location: 'Desk' }
     ]);
   } else if (type === 'adhd') {
@@ -10858,7 +10858,7 @@ function renderCbtAdhdCardsTab() {
 // ======================== ONBOARDING ========================
 function showOnboarding(){
   const isAr = currentLang() === 'ar';
-  const logoUrl = 'https://placehold.co/80x80/4ECDC4/0F0F14?text=S';
+  const logoUrl = 'https://placehold.co/80x80/4ECDC4/0F0F14?text=TQ';
 
   // Ensure sticky notes are collapsed and hidden before user enters their name
   stickyNotesVisible = false;
@@ -10870,13 +10870,13 @@ function showOnboarding(){
   showModal(`
     <div style="text-align:center">
       <div style="display:flex;justify-content:center;margin-bottom:12px">
-        <img src="${logoUrl}" alt="Spark Logo" style="width:64px;height:64px;border-radius:14px;border:2px solid var(--teal);box-shadow:0 0 25px var(--teal-g);object-fit:cover;">
+        <img src="${logoUrl}" alt="Talib Al Qabas Logo" style="width:64px;height:64px;border-radius:14px;border:2px solid var(--teal);box-shadow:0 0 25px var(--teal-g);object-fit:cover;">
       </div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;background:var(--card);padding:4px 10px;border-radius:20px;border:1px solid var(--border);">
         <button class="btn btn-xs ${isAr?'btn-teal':'btn-ghost'}" onclick="setLanguage('ar');showOnboarding();" style="font-size:11px;padding:3px 10px;">العربية (RTL)</button>
         <button class="btn btn-xs ${!isAr?'btn-teal':'btn-ghost'}" onclick="setLanguage('en');showOnboarding();" style="font-size:11px;padding:3px 10px;">English</button>
       </div>
-      <h1 style="font-size:24px;margin-bottom:4px">${isAr ? 'مرحبًا بك في منصة سَبارك' : 'Welcome to Spark'}</h1>
+      <h1 style="font-size:24px;margin-bottom:4px">${isAr ? 'مرحبًا بك في منصة طالب القبس' : 'Welcome to Talib Al Qabas'}</h1>
       <p style="color:var(--text2);margin-bottom:20px;font-size:14px">${isAr ? 'خطوات صغيرة، انطلاقة عظيمة في التعلّم والتركيز والعلوم.' : 'Small steps, big momentum in learning and focus.'}</p>
       
       <div style="text-align:${isAr ? 'right' : 'left'};margin-bottom:16px">
@@ -10916,7 +10916,7 @@ function showOnboarding(){
       </div>
 
       <button class="btn btn-lg btn-primary" style="width:100%;justify-content:center" onclick="finishOnboarding()">
-        ${isAr ? 'انطلق الآن في سبارك <i class="fas fa-arrow-left" style="margin-right:6px"></i>' : "Let's Go <i class=\"fas fa-arrow-right\" style=\"margin-left:6px\"></i>"}
+        ${isAr ? 'انطلق الآن في طالب القبس <i class="fas fa-arrow-left" style="margin-right:6px"></i>' : "Let's Go with Talib Al Qabas <i class=\"fas fa-arrow-right\" style=\"margin-left:6px\"></i>"}
       </button>
     </div>
   `);

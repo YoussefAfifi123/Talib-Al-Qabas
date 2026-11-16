@@ -1,5 +1,5 @@
 /**
- * Spark (سبارك) — Comprehensive Arabic & English Localization Engine
+ * Talib Al Qabas (طالب القبس) — Comprehensive Arabic & English Localization Engine
  * Provides instant, complete, bi-directional translation for every single point of text in the platform.
  */
 
@@ -9,13 +9,19 @@
   // Master translation dictionary
   const AR_DICT = {
     // Brand & Headers
-    "Spark": "سَبارك",
-    "Manara": "مَنارة",
+    "Talib Al Qabas": "طالب القبس",
+    "Sirajify": "طالب القبس",
+    "Spark": "طالب القبس",
+    "Manara": "طالب القبس",
     "Learn & Focus": "منصة التعلّم والتركيز",
-    "Spark Platform": "منصة سَبارك",
-    "Manara Platform": "منصة سَبارك",
-    "Welcome to Spark": "مرحبًا بك في منصة سَبارك",
-    "Welcome to Manara": "مرحبًا بك في منصة سَبارك",
+    "Talib Al Qabas Platform": "منصة طالب القبس",
+    "Sirajify Platform": "منصة طالب القبس",
+    "Spark Platform": "منصة طالب القبس",
+    "Manara Platform": "منصة طالب القبس",
+    "Welcome to Talib Al Qabas": "مرحبًا بك في منصة طالب القبس",
+    "Welcome to Sirajify": "مرحبًا بك في منصة طالب القبس",
+    "Welcome to Spark": "مرحبًا بك في منصة طالب القبس",
+    "Welcome to Manara": "مرحبًا بك في منصة طالب القبس",
     "Small steps, big momentum in learning and focus.": "خطوات صغيرة، انطلاقة عظيمة في التعلّم والتركيز والعلوم.",
     "What should we call you?": "ما اسمك الكريم؟",
     "What grade are you in?": "في أي صف دراسي أنت؟",
@@ -37,8 +43,10 @@
     "Scientific Calculator": "الآلة الحاسبة العلمية",
     "Flashcards": "البطاقات التعليمية",
     "Store": "المتجر",
-    "Spark Store": "متجر سَبارك",
-    "Manara Store": "متجر سَبارك",
+    "Talib Al Qabas Store": "متجر طالب القبس",
+    "Sirajify Store": "متجر طالب القبس",
+    "Spark Store": "متجر طالب القبس",
+    "Manara Store": "متجر طالب القبس",
     "Resources": "مصادر التعلّم",
     "Free Learning Resources": "مصادر التعلّم المجانية",
     "Progress": "مستوى التقدم",
@@ -462,8 +470,10 @@
     "Focus (min)": "التركيز (بالدقائق)",
 
     // Settings View
-    "Customize your Spark learning environment.": "تخصيص بيئة التعلّم ومنصة سبارك بالكامل.",
-    "Customize your Manara learning environment.": "تخصيص بيئة التعلّم ومنصة سبارك بالكامل.",
+    "Customize your Talib Al Qabas learning environment.": "تخصيص بيئة التعلّم ومنصة طالب القبس بالكامل.",
+    "Customize your Sirajify learning environment.": "تخصيص بيئة التعلّم ومنصة طالب القبس بالكامل.",
+    "Customize your Spark learning environment.": "تخصيص بيئة التعلّم ومنصة طالب القبس بالكامل.",
+    "Customize your Manara learning environment.": "تخصيص بيئة التعلّم ومنصة طالب القبس بالكامل.",
     "Language & Interface Direction": "اللغة واتجاه الواجهة",
     "Toggle between full Arabic with Right-to-Left (RTL) alignment and English (LTR).": "التبديل بين الواجهة العربية بالكامل بمحاذاة من اليمين لليسار (RTL) والواجهة الإنجليزية (LTR).",
     "Profile": "الملف الشخصي",

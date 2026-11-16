@@ -1,4 +1,4 @@
-# Spark (سبارك) — Cognitive Reframing, Focus Lab & Learning Platform
+# Talib Al Qabas (طالب القبس) — Cognitive Reframing, Focus Lab & Learning Platform
 
 > An evidence-based, neurodiversity-informed digital workspace engineered for ADHD learners, academic momentum, deep focus, and emotional regulation.
 
@@ -6,7 +6,7 @@
 
 ## Executive Overview
 
-**Spark (سبارك)** is a client-authoritative academic productivity and cognitive wellness platform. Developed with an emphasis on executive function scaffolding, it bridges the gap between active study workflows (time-boxing, task decomposition, procedural soundscapes) and real-time emotional regulation (acute panic SOS, cognitive reframing, structured habits, and micro-achievement tracking).
+**Talib Al Qabas (طالب القبس)** is a client-authoritative academic productivity and cognitive wellness platform. Developed with an emphasis on executive function scaffolding, it bridges the gap between active study workflows (time-boxing, task decomposition, procedural soundscapes) and real-time emotional regulation (acute panic SOS, cognitive reframing, structured habits, and micro-achievement tracking).
 
 The platform provides a bilingual (Arabic RTL and English LTR) experience featuring interactive STEM laboratories, mathematical typography, tactile floating notes, and gamified progress tracking.
 
@@ -52,7 +52,7 @@ The platform provides a bilingual (Arabic RTL and English LTR) experience featur
 ### 6. Gamification & Intrinsic Motivation
 * **Experience (XP) & Level Progression**: Non-punitive reward framework assigning points for active study sessions, completed tasks, and wellness check-ins.
 * **Daily Quests & Milestones**: Structured daily missions that incentivize holistic habit formation.
-* **Spark Inventory & Avatar Customization**: In-app catalog offering unlockable workspace themes, color palettes, and interface enhancements.
+* **Talib Al Qabas Store & Avatar Customization**: In-app catalog offering unlockable workspace themes, color palettes, and interface enhancements.
 
 ---
 
