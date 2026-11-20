@@ -2229,6 +2229,16 @@ function clearBodyThemeOverrides() {
   ['--teal','--teal-rgb','--teal-hover','--teal-g','--teal-text','--accent','--accent-rgb','--accent-hover','--accent-g','--accent-text'].forEach(p => bs.removeProperty(p));
 }
 
+function updateDynamicFavicon(tealHex, accentHex, textHex) {
+  if (typeof document === 'undefined') return;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${tealHex}"/><stop offset="100%" stop-color="${accentHex}"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="16" fill="url(#g)" stroke="${tealHex}" stroke-width="2.5"/><text x="32" y="42" text-anchor="middle" font-family="Fredoka,Nunito,Arial,sans-serif" font-weight="800" font-size="26" letter-spacing="0.5" fill="${textHex}">TQ</text></svg>`;
+  const dataUrl = 'data:image/svg+xml,' + encodeURIComponent(svg);
+  ['app-favicon', 'app-shortcut-favicon', 'app-apple-icon'].forEach(id => {
+    const link = document.getElementById(id);
+    if (link) link.href = dataUrl;
+  });
+}
+
 function applyPaletteToTarget(targetStyle, accentHex, tealHex) {
   const isLight = document.body.classList.contains('light-mode');
   const aRgb = hexToRgbObj(accentHex);
@@ -2238,18 +2248,21 @@ function applyPaletteToTarget(targetStyle, accentHex, tealHex) {
     ? (lum > 0.42 ? mixHex(tBase, '#000000', 0.22) : mixHex(tBase, '#000000', 0.08))
     : (tealHex ? tBase : mixHex(tBase, '#FFFFFF', 0.12));
   const tRgb = hexToRgbObj(resolvedTeal);
+  const accentText = getContrastText(accentHex);
 
   targetStyle.setProperty('--accent', accentHex);
   targetStyle.setProperty('--accent-rgb', `${aRgb.r},${aRgb.g},${aRgb.b}`);
   targetStyle.setProperty('--accent-hover', mixHex(accentHex, '#000000', 0.15));
   targetStyle.setProperty('--accent-g', `rgba(${aRgb.r},${aRgb.g},${aRgb.b},0.25)`);
-  targetStyle.setProperty('--accent-text', getContrastText(accentHex));
+  targetStyle.setProperty('--accent-text', accentText);
 
   targetStyle.setProperty('--teal', resolvedTeal);
   targetStyle.setProperty('--teal-rgb', `${tRgb.r},${tRgb.g},${tRgb.b}`);
   targetStyle.setProperty('--teal-hover', mixHex(resolvedTeal, '#000000', 0.14));
   targetStyle.setProperty('--teal-g', `rgba(${tRgb.r},${tRgb.g},${tRgb.b},0.2)`);
   targetStyle.setProperty('--teal-text', getContrastText(resolvedTeal));
+
+  updateDynamicFavicon(resolvedTeal, accentHex, accentText);
 }
 
 function applyTheme(item){
