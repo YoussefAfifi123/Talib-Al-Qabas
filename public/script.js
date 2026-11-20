@@ -1207,7 +1207,7 @@ function renderDashboard(){
         <h1 style="font-size:28px;font-weight:700;margin-bottom:4px">${isArDash ? `مرحباً بعودتك، ${escHtml(u.name)}` : `Welcome back, ${escHtml(u.name)}`}</h1>
         <p style="color:var(--text2);font-size:15px">${isArDash ? 'إليك جدولك ومهامك لليوم. اختر شيئاً واحداً فقط وابدأ به بهدوء.' : "Here's what's on your plate today. Just pick one thing to start."}</p>
       </div>
-      <div class="tag" style="background:rgba(255,140,66,.12);color:var(--accent);font-size:14px;padding:6px 14px">
+      <div class="tag" style="background:rgba(var(--accent-rgb),.12);color:var(--accent);font-size:14px;padding:6px 14px">
         <i class="fas fa-bolt"></i> ${Store.get('totalXP')} ${isArDash ? 'مجموع نقاط XP' : 'XP total'}
       </div>
     </div>
@@ -1300,7 +1300,7 @@ function renderDashboard(){
     <!-- Mind & Mood Wellness Card -->
     ${(() => {
       return `
-      <div class="card card-glow" style="margin-bottom:24px; background:linear-gradient(135deg, var(--card) 0%, rgba(78,205,196,0.08) 100%);">
+      <div class="card card-glow" style="margin-bottom:24px; background:linear-gradient(135deg, var(--card) 0%, rgba(var(--teal-rgb),0.08) 100%);">
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
           <h3 style="font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px;">
             <i class="fas fa-heart-pulse" style="color:var(--teal);"></i> ${isArDash ? 'تفقّد المزاج والراحة النفسية' : 'Mind & Emotional Health Check-In'}
@@ -1334,8 +1334,8 @@ function renderDashboard(){
     ].map(qi=>`<div class="quest-item ${getTodayQuests()[qi.k]?'completed':''}" onclick="${getTodayQuests()[qi.k]?'':`navigate('${qi.v}')`}"><div class="quest-check">${getTodayQuests()[qi.k]?'<i class="fas fa-check" style="font-size:12px"></i>':''}</div><div><div style="font-weight:700;font-size:14px">${qi.t}</div><div style="font-size:12px;color:var(--text2)">${qi.d}</div></div>${getTodayQuests()[qi.k]?'':`<div style="margin-${isArDash?'right':'left'}:auto"><span class="btn btn-sm btn-primary">${qi.l}</span></div>`}</div>`).join('')}</div></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px">
       <div class="card card-glow" style="cursor:pointer" onclick="navigate('focus')"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:44px;height:44px;border-radius:12px;background:var(--teal-g);display:flex;align-items:center;justify-content:center"><i class="fas fa-bullseye" style="color:var(--teal);font-size:18px"></i></div><div><div style="font-weight:700;font-size:15px">${isArDash ? 'مختبر التركيز' : 'Focus Lab'}</div><div style="font-size:12px;color:var(--text2)">${ttf>0?(isArDash?`${ttf} دقيقة منجزة اليوم`:`${ttf}m done today`):(isArDash?'ابدأ جلستك الأولى':'Start your first session')}</div></div></div><div class="btn btn-teal btn-sm" style="width:100%;justify-content:center">${isArDash ? '10 دقائق فقط' : 'Just 10 Minutes'} <i class="fas ${isArDash ? 'fa-arrow-left' : 'fa-arrow-right'}"></i></div></div>
-      <div class="card" style="cursor:pointer" onclick="navigate('learn')"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:44px;height:44px;border-radius:12px;background:rgba(255,140,66,.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-gamepad" style="color:var(--accent);font-size:18px"></i></div><div><div style="font-weight:700;font-size:15px">${isArDash ? 'مغامرة الرياضيات' : 'Math Adventure'}</div><div style="font-size:12px;color:var(--text2)">${isArDash ? 'المرحلة الابتدائية (1–6)' : 'Primary (Grades 1–6)'}</div></div></div><div class="btn btn-primary btn-sm" style="width:100%;justify-content:center">${isArDash ? 'العب الآن' : 'Play Now'} <i class="fas ${isArDash ? 'fa-arrow-left' : 'fa-arrow-right'}"></i></div></div>
-      <div class="card" style="cursor:pointer" onclick="navigate('calculator')"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:44px;height:44px;border-radius:12px;background:rgba(78,205,196,.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-calculator" style="color:var(--teal);font-size:18px"></i></div><div><div style="font-weight:700;font-size:15px">${isArDash ? 'الآلة الحاسبة' : 'Calculator'}</div><div style="font-size:12px;color:var(--text2)">${isArDash ? 'بيانية وعلمية متطورة' : 'GeoGebra & Scientific'}</div></div></div><div class="btn btn-teal btn-sm" style="width:100%;justify-content:center">${isArDash ? 'احسب الآن' : 'Calculate'} <i class="fas ${isArDash ? 'fa-arrow-left' : 'fa-arrow-right'}"></i></div></div>
+      <div class="card" style="cursor:pointer" onclick="navigate('learn')"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:44px;height:44px;border-radius:12px;background:rgba(var(--accent-rgb),.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-gamepad" style="color:var(--accent);font-size:18px"></i></div><div><div style="font-weight:700;font-size:15px">${isArDash ? 'مغامرة الرياضيات' : 'Math Adventure'}</div><div style="font-size:12px;color:var(--text2)">${isArDash ? 'المرحلة الابتدائية (1–6)' : 'Primary (Grades 1–6)'}</div></div></div><div class="btn btn-primary btn-sm" style="width:100%;justify-content:center">${isArDash ? 'العب الآن' : 'Play Now'} <i class="fas ${isArDash ? 'fa-arrow-left' : 'fa-arrow-right'}"></i></div></div>
+      <div class="card" style="cursor:pointer" onclick="navigate('calculator')"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:44px;height:44px;border-radius:12px;background:rgba(var(--teal-rgb),.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-calculator" style="color:var(--teal);font-size:18px"></i></div><div><div style="font-weight:700;font-size:15px">${isArDash ? 'الآلة الحاسبة' : 'Calculator'}</div><div style="font-size:12px;color:var(--text2)">${isArDash ? 'بيانية وعلمية متطورة' : 'GeoGebra & Scientific'}</div></div></div><div class="btn btn-teal btn-sm" style="width:100%;justify-content:center">${isArDash ? 'احسب الآن' : 'Calculate'} <i class="fas ${isArDash ? 'fa-arrow-left' : 'fa-arrow-right'}"></i></div></div>
       <div class="card" style="cursor:pointer" onclick="navigate('flashcards')"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:44px;height:44px;border-radius:12px;background:rgba(88,166,255,.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-clone" style="color:var(--blue);font-size:18px"></i></div><div><div style="font-weight:700;font-size:15px">${isArDash ? 'البطاقات التعليمية' : 'Flashcards'}</div><div style="font-size:12px;color:var(--text2)">${isArDash ? 'مراجعة بالتكرار المتباعد' : 'Spaced repetition review'}</div></div></div><div class="btn btn-sm btn-secondary" style="width:100%;justify-content:center">${isArDash ? 'ذاكر الآن' : 'Study'} <i class="fas ${isArDash ? 'fa-arrow-left' : 'fa-arrow-right'}"></i></div></div>
       <div class="card" style="cursor:pointer" onclick="navigate('store')"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:44px;height:44px;border-radius:12px;background:rgba(216,180,254,.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-store" style="color:#D8B4FE;font-size:18px"></i></div><div><div style="font-weight:700;font-size:15px">${isArDash ? 'المتجر' : 'Store'}</div><div style="font-size:12px;color:var(--text2)">${isArDash ? 'أنفق نقاط خبرتك وتسوّق' : 'Spend your XP'}</div></div></div><div class="btn btn-sm" style="width:100%;justify-content:center;border:1px solid var(--text2);background:transparent">${isArDash ? 'تسوّق الآن' : 'Shop'} <i class="fas ${isArDash ? 'fa-arrow-left' : 'fa-arrow-right'}"></i></div></div>
     </div>
@@ -1508,7 +1508,7 @@ function bdSVG(type='default'){
   } else if (type==='magic_cat') {
     return `<svg viewBox="0 0 100 150" width="80" id="bd-char" class="bd-character" style="filter:drop-shadow(0 4px 12px rgba(168,85,247,.3))"><rect x="10" y="128" width="80" height="4" rx="2" fill="#2A2A3D" opacity=".5"/><path d="M25 50 L20 20 L40 40 Z" fill="#A855F7"/><path d="M75 50 L80 20 L60 40 Z" fill="#A855F7"/><ellipse cx="50" cy="70" rx="35" ry="30" fill="#E9D5FF"/><circle cx="40" cy="65" r="5" fill="#000"/><circle cx="60" cy="65" r="5" fill="#000"/><path d="M45 80 Q50 85 55 80" fill="none" stroke="#6B21A8" stroke-width="2"/><path d="M30 90 Q50 130 70 90" fill="#A855F7"/></svg>`;
   }
-  return `<svg viewBox="0 0 100 150" width="80" id="bd-char" class="bd-character" style="filter:drop-shadow(0 4px 12px rgba(0,0,0,.3))"><rect x="10" y="128" width="80" height="4" rx="2" fill="#2A2A3D" opacity=".5"/><ellipse cx="50" cy="28" rx="27" ry="24" fill="#5C3D2E"/><circle cx="50" cy="36" r="22" fill="#FFD4A8"/><path d="M28 28 Q35 12 50 14 Q65 12 72 28 Q72 22 65 18 Q55 12 50 14 Q45 12 35 18 Q28 22 28 28Z" fill="#5C3D2E"/><ellipse cx="28" cy="38" rx="4" ry="5" fill="#F0C8A0"/><ellipse cx="72" cy="38" rx="4" ry="5" fill="#F0C8A0"/><rect x="32" y="33" width="16" height="12" rx="5" ry="5" fill="none" stroke="#555" stroke-width="1.8"/><rect x="52" y="33" width="16" height="12" rx="5" ry="5" fill="none" stroke="#555" stroke-width="1.8"/><line x1="48" y1="39" x2="52" y2="39" stroke="#555" stroke-width="1.5"/><line x1="32" y1="39" x2="26" y2="37" stroke="#555" stroke-width="1.5"/><line x1="68" y1="39" x2="74" y2="37" stroke="#555" stroke-width="1.5"/><ellipse id="bd-eyes" cx="40" cy="39" rx="2.5" ry="3" fill="#333"/><ellipse id="bd-eye2" cx="60" cy="39" rx="2.5" ry="3" fill="#333"/><line x1="36" y1="30" x2="44" y2="30.5" stroke="#5C3D2E" stroke-width="1.2" stroke-linecap="round"/><line x1="56" y1="30.5" x2="64" y2="30" stroke="#5C3D2E" stroke-width="1.2" stroke-linecap="round"/><path d="M44 48 Q50 52 56 48" fill="none" stroke="#A0785A" stroke-width="1.5" stroke-linecap="round"/><rect x="44" y="57" width="12" height="6" rx="2" fill="#FFD4A8"/><path d="M30 63 Q30 60 40 60 L60 60 Q70 60 70 63 L74 120 Q74 126 68 126 L32 126 Q26 126 26 120 Z" fill="#4ECDC4"/><path d="M40 60 L50 68 L60 60" fill="none" stroke="#3DBDB5" stroke-width="1.5"/><path d="M30 68 Q22 82 30 96" fill="none" stroke:#FFD4A8" stroke-width="7" stroke-linecap="round"/><path d="M70 68 Q78 82 70 96" fill="none" stroke:#FFD4A8" stroke-width="7" stroke-linecap="round"/><g id="bd-book" style="transition:transform .6s ease"><rect x="28" y="88" width="44" height="30" rx="2" fill="#FFF8F0" stroke="#E0D5C8" stroke-width="1"/><line x1="50" y1="88" x2="50" y2="118" stroke="#D5C8B8" stroke-width="1"/><line x1="32" y1="95" x2="47" y2="95" stroke="#DDD" stroke-width=".7"/><line x1="32" y1="99" x2="45" y2="99" stroke="#DDD" stroke-width=".7"/><line x1="32" y1="103" x2="47" y2="103" stroke="#DDD" stroke-width=".7"/><line x1="32" y1="107" x2="44" y2="107" stroke="#DDD" stroke-width=".7"/><line x1="53" y1="95" x2="68" y2="95" stroke="#DDD" stroke-width=".7"/><line x1="53" y1="99" x2="66" y2="99" stroke="#DDD" stroke-width=".7"/><line x1="53" y1="103" x2="68" y2="103" stroke="#DDD" stroke-width=".7"/><line x1="53" y1="107" x2="65" y2="107" stroke="#DDD" stroke-width=".7"/></g></svg>`;
+  return `<svg viewBox="0 0 100 150" width="80" id="bd-char" class="bd-character" style="filter:drop-shadow(0 4px 12px rgba(0,0,0,.3))"><rect x="10" y="128" width="80" height="4" rx="2" fill="#2A2A3D" opacity=".5"/><ellipse cx="50" cy="28" rx="27" ry="24" fill="#5C3D2E"/><circle cx="50" cy="36" r="22" fill="#FFD4A8"/><path d="M28 28 Q35 12 50 14 Q65 12 72 28 Q72 22 65 18 Q55 12 50 14 Q45 12 35 18 Q28 22 28 28Z" fill="#5C3D2E"/><ellipse cx="28" cy="38" rx="4" ry="5" fill="#F0C8A0"/><ellipse cx="72" cy="38" rx="4" ry="5" fill="#F0C8A0"/><rect x="32" y="33" width="16" height="12" rx="5" ry="5" fill="none" stroke="#555" stroke-width="1.8"/><rect x="52" y="33" width="16" height="12" rx="5" ry="5" fill="none" stroke="#555" stroke-width="1.8"/><line x1="48" y1="39" x2="52" y2="39" stroke="#555" stroke-width="1.5"/><line x1="32" y1="39" x2="26" y2="37" stroke="#555" stroke-width="1.5"/><line x1="68" y1="39" x2="74" y2="37" stroke="#555" stroke-width="1.5"/><ellipse id="bd-eyes" cx="40" cy="39" rx="2.5" ry="3" fill="#333"/><ellipse id="bd-eye2" cx="60" cy="39" rx="2.5" ry="3" fill="#333"/><line x1="36" y1="30" x2="44" y2="30.5" stroke="#5C3D2E" stroke-width="1.2" stroke-linecap="round"/><line x1="56" y1="30.5" x2="64" y2="30" stroke="#5C3D2E" stroke-width="1.2" stroke-linecap="round"/><path d="M44 48 Q50 52 56 48" fill="none" stroke="#A0785A" stroke-width="1.5" stroke-linecap="round"/><rect x="44" y="57" width="12" height="6" rx="2" fill="#FFD4A8"/><path d="M30 63 Q30 60 40 60 L60 60 Q70 60 70 63 L74 120 Q74 126 68 126 L32 126 Q26 126 26 120 Z" fill="var(--teal)"/><path d="M40 60 L50 68 L60 60" fill="none" stroke="var(--teal-hover)" stroke-width="1.5"/><path d="M30 68 Q22 82 30 96" fill="none" stroke="#FFD4A8" stroke-width="7" stroke-linecap="round"/><path d="M70 68 Q78 82 70 96" fill="none" stroke="#FFD4A8" stroke-width="7" stroke-linecap="round"/><g id="bd-book" style="transition:transform .6s ease"><rect x="28" y="88" width="44" height="30" rx="2" fill="#FFF8F0" stroke="#E0D5C8" stroke-width="1"/><line x1="50" y1="88" x2="50" y2="118" stroke="#D5C8B8" stroke-width="1"/><line x1="32" y1="95" x2="47" y2="95" stroke="#DDD" stroke-width=".7"/><line x1="32" y1="99" x2="45" y2="99" stroke="#DDD" stroke-width=".7"/><line x1="32" y1="103" x2="47" y2="103" stroke="#DDD" stroke-width=".7"/><line x1="32" y1="107" x2="44" y2="107" stroke="#DDD" stroke-width=".7"/><line x1="53" y1="95" x2="68" y2="95" stroke="#DDD" stroke-width=".7"/><line x1="53" y1="99" x2="66" y2="99" stroke="#DDD" stroke-width=".7"/><line x1="53" y1="103" x2="68" y2="103" stroke="#DDD" stroke-width=".7"/><line x1="53" y1="107" x2="65" y2="107" stroke="#DDD" stroke-width=".7"/></g></svg>`;
 }
 
 function renderFocus(){
@@ -2054,7 +2054,7 @@ function renderStore(){
       <div class="store-grid" style="margin-bottom:32px">${CATALOG.themes.map(t=>renderStoreItem('theme', t, inv)).join('')}</div>
 
       <!-- Educational / Motivational XP Info Card -->
-      <div class="card" style="margin-top:16px; margin-bottom:32px; padding:16px 20px; background:linear-gradient(135deg, rgba(255,140,66,0.06) 0%, rgba(78,205,196,0.06) 100%); border:1px solid rgba(255,140,66,0.25);">
+      <div class="card" style="margin-top:16px; margin-bottom:32px; padding:16px 20px; background:linear-gradient(135deg, rgba(var(--accent-rgb),0.06) 0%, rgba(var(--teal-rgb),0.06) 100%); border:1px solid rgba(var(--accent-rgb),0.25);">
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
           <i class="fas fa-award" style="color:var(--accent); font-size:20px"></i>
           <span style="font-weight:700; font-size:15px">
@@ -2123,9 +2123,14 @@ function handleStoreClick(type, id){
     if (type === 'color') {
       const u = Store.get('user');
       if (u) { u.color = id; Store.set('user', u); }
+      if (inv.equipped.theme && inv.equipped.theme !== 'light' && inv.equipped.theme !== 'default') {
+        inv.equipped.theme = 'default';
+      }
+      Store.set('inventory', inv);
       applyAccentColor(id);
+    } else {
+      Store.set('inventory', inv);
     }
-    Store.set('inventory',inv);
     SFX.click();
     if(type==='theme')applyTheme(item);
     updateUserPanel();
@@ -2143,7 +2148,7 @@ function handleStoreClick(type, id){
               ? `التكلفة: <strong style="color:var(--accent)">${item.cost} نقطة XP</strong>.<br>رصيدك الحالي: <strong>${currentXp} نقطة</strong> (المتبقي بعد الشراء: ${currentXp - item.cost} نقطة).`
               : `Cost: <strong style="color:var(--accent)">${item.cost} XP</strong>.<br>You have <strong>${currentXp} XP</strong>.`}
           </p>
-          ${info.desc ? `<div style="padding:10px 14px; border-radius:10px; background:rgba(78,205,196,0.08); border:1px solid rgba(78,205,196,0.25); font-size:13px; color:var(--text2); margin-bottom:18px;"><i class="fas fa-sparkles" style="color:var(--teal); margin-${isAr?'left':'right'}:6px"></i>${info.desc}</div>` : ''}
+          ${info.desc ? `<div style="padding:10px 14px; border-radius:10px; background:rgba(var(--teal-rgb),0.08); border:1px solid rgba(var(--teal-rgb),0.25); font-size:13px; color:var(--text2); margin-bottom:18px;"><i class="fas fa-sparkles" style="color:var(--teal); margin-${isAr?'left':'right'}:6px"></i>${info.desc}</div>` : ''}
           <div style="display:flex;gap:10px;justify-content:${isAr ? 'flex-start' : 'flex-end'}">
             <button class="btn btn-secondary" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
             <button class="btn btn-primary" onclick="buyItem('${type}','${id}')"><i class="fas fa-shopping-bag" style="margin-${isAr?'left':'right'}:6px"></i>${isAr ? 'تأكيد الشراء' : 'Buy'}</button>
@@ -2169,9 +2174,14 @@ function buyItem(type,id){
   if (type === 'color') {
     const u = Store.get('user');
     if (u) { u.color = id; Store.set('user', u); }
+    if (inv.equipped.theme && inv.equipped.theme !== 'light' && inv.equipped.theme !== 'default') {
+      inv.equipped.theme = 'default';
+    }
+    Store.set('inventory',inv);
     applyAccentColor(id);
+  } else {
+    Store.set('inventory',inv);
   }
-  Store.set('inventory',inv);
   closeModal();
   SFX.bonus();
   if(type==='theme')applyTheme(item);
@@ -2180,23 +2190,91 @@ function buyItem(type,id){
   toast(isAr ? `تهانينا! تم شراء وتفعيل "${info.name}" بنجاح!` : `Purchased ${item.name}!`, 'success');
 }
 
+function hexToRgbObj(hex) {
+  const clean = String(hex || '').trim().replace('#', '');
+  const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+  if (!/^[0-9a-fA-F]{6}$/.test(full)) return { r: 255, g: 140, b: 66 };
+  return {
+    r: parseInt(full.slice(0, 2), 16),
+    g: parseInt(full.slice(2, 4), 16),
+    b: parseInt(full.slice(4, 6), 16)
+  };
+}
+
+function mixHex(hexA, hexB, weightB = 0.2) {
+  const a = hexToRgbObj(hexA);
+  const b = hexToRgbObj(hexB);
+  const w = Math.max(0, Math.min(1, weightB));
+  const r = Math.round(a.r * (1 - w) + b.r * w);
+  const g = Math.round(a.g * (1 - w) + b.g * w);
+  const bl = Math.round(a.b * (1 - w) + b.b * w);
+  return '#' + [r, g, bl].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+function getRelativeLuminance(hex) {
+  const { r, g, b } = hexToRgbObj(hex);
+  const [rl, gl, bl] = [r, g, b].map(v => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+}
+
+function getContrastText(hex) {
+  return getRelativeLuminance(hex) > 0.48 ? '#0F0F14' : '#FFFFFF';
+}
+
+function clearBodyThemeOverrides() {
+  const bs = document.body.style;
+  ['--teal','--teal-rgb','--teal-hover','--teal-g','--teal-text','--accent','--accent-rgb','--accent-hover','--accent-g','--accent-text'].forEach(p => bs.removeProperty(p));
+}
+
+function applyPaletteToTarget(targetStyle, accentHex, tealHex) {
+  const isLight = document.body.classList.contains('light-mode');
+  const aRgb = hexToRgbObj(accentHex);
+  const tBase = tealHex || accentHex;
+  const lum = getRelativeLuminance(tBase);
+  const resolvedTeal = isLight
+    ? (lum > 0.42 ? mixHex(tBase, '#000000', 0.22) : mixHex(tBase, '#000000', 0.08))
+    : (tealHex ? tBase : mixHex(tBase, '#FFFFFF', 0.12));
+  const tRgb = hexToRgbObj(resolvedTeal);
+
+  targetStyle.setProperty('--accent', accentHex);
+  targetStyle.setProperty('--accent-rgb', `${aRgb.r},${aRgb.g},${aRgb.b}`);
+  targetStyle.setProperty('--accent-hover', mixHex(accentHex, '#000000', 0.15));
+  targetStyle.setProperty('--accent-g', `rgba(${aRgb.r},${aRgb.g},${aRgb.b},0.25)`);
+  targetStyle.setProperty('--accent-text', getContrastText(accentHex));
+
+  targetStyle.setProperty('--teal', resolvedTeal);
+  targetStyle.setProperty('--teal-rgb', `${tRgb.r},${tRgb.g},${tRgb.b}`);
+  targetStyle.setProperty('--teal-hover', mixHex(resolvedTeal, '#000000', 0.14));
+  targetStyle.setProperty('--teal-g', `rgba(${tRgb.r},${tRgb.g},${tRgb.b},0.2)`);
+  targetStyle.setProperty('--teal-text', getContrastText(resolvedTeal));
+}
+
 function applyTheme(item){
   const b=document.body;
-  b.className=b.className.replace(/light-mode/g,'').trim();
-  if(item.style){
-    for(let k in item.style) b.style.setProperty(k, item.style[k]);
+  b.classList.remove('light-mode');
+  clearBodyThemeOverrides();
+  if(item && item.class) b.classList.add(item.class);
+  if(item && item.style){
+    const accentHex = item.style['--accent'] || '#FF8C42';
+    const tealHex = item.style['--teal'] || accentHex;
+    applyPaletteToTarget(b.style, accentHex, tealHex);
   } else {
-    b.style.removeProperty('--teal');
-    b.style.removeProperty('--accent');
+    const u = Store.get('user');
+    const inv = Store.get('inventory');
+    const savedColor = (u && u.color) || (inv && inv.equipped && inv.equipped.color) || '#FF8C42';
+    applyAccentColor(savedColor);
   }
-  if(item.class) b.classList.add(item.class);
 }
 
 function applyAccentColor(hexColor) {
   if (!hexColor) return;
-  document.documentElement.style.setProperty('--accent', hexColor);
-  document.documentElement.style.setProperty('--accent-glow', hexColor + '33');
+  clearBodyThemeOverrides();
+  applyPaletteToTarget(document.documentElement.style, hexColor, null);
 }
+window.applyAccentColor = applyAccentColor;
 
 // ======================== MATH GAME (Primary 1–6, Egypt curriculum) ========================
 let gameState={active:false,questions:[],current:0,score:0,streak:0,xp:0,grade:2,answered:false};
@@ -3316,7 +3394,7 @@ function renderScienceContent(mountEl) {
               </div>
 
               <!-- Inquiry Challenge Prompt -->
-              <div class="card" style="padding:14px; background:rgba(78,205,196,0.08); border:1px solid rgba(78,205,196,0.3); border-radius:12px;">
+              <div class="card" style="padding:14px; background:rgba(var(--teal-rgb),0.08); border:1px solid rgba(var(--teal-rgb),0.3); border-radius:12px;">
                 <div style="display:flex; align-items:center; gap:6px; font-weight:800; font-size:12px; color:var(--teal); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">
                   <i class="fas fa-flag-checkered"></i> ${isAr ? 'تحدي الاستكشاف والبحث العلمي' : 'Investigation Challenge'}
                 </div>
@@ -3414,7 +3492,7 @@ function renderScienceContent(mountEl) {
           <div>
             <h1 style="font-size:24px; font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
               ${isAr ? 'مختبر تجارب PhET العلمية التفاعلية' : 'PhET Interactive Science Labs'}
-              <span class="tag" style="background:rgba(78,205,196,0.15); color:var(--teal); font-size:11px; font-weight:800;">${isAr ? 'بيئة مدمجة' : 'Embedded Suite'}</span>
+              <span class="tag" style="background:rgba(var(--teal-rgb),0.15); color:var(--teal); font-size:11px; font-weight:800;">${isAr ? 'بيئة مدمجة' : 'Embedded Suite'}</span>
             </h1>
             <p style="color:var(--text2); font-size:14px; margin:0;">
               ${isAr ? 'محاكاة تفاعلية مدعومة بالأبحاث العلمية من جامعة كولورادو بولدر. استكشف الفيزياء والكيمياء والأحياء وعلوم الأرض بالفيدباك المباشر والتطبيقات الحية.' : 'Research-backed interactive simulations by University of Colorado Boulder. Explore physics, chemistry, biology, and earth science with real-time feedback.'}
@@ -3530,7 +3608,7 @@ function renderScienceContent(mountEl) {
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
                   <span class="tag" style="background:${sim.color}18; color:${sim.color}; font-size:10px; font-weight:700;">${simSubject}</span>
                   <span class="tag" style="background:var(--bg); border:1px solid var(--border); color:var(--text2); font-size:10px;">${isAr ? `الصفوف ${sim.grades[0]}–${sim.grades[sim.grades.length - 1]}` : `Grades ${sim.grades[0]}–${sim.grades[sim.grades.length - 1]}`}</span>
-                  ${sim.featured ? `<span class="tag" style="background:rgba(255,140,66,0.15); color:var(--accent); font-size:10px; font-weight:700;">${isAr ? '★ مميز وشائع' : '★ Popular'}</span>` : ''}
+                  ${sim.featured ? `<span class="tag" style="background:rgba(var(--accent-rgb),0.15); color:var(--accent); font-size:10px; font-weight:700;">${isAr ? '★ مميز وشائع' : '★ Popular'}</span>` : ''}
                 </div>
 
                 <p style="font-size:12px; color:var(--text2); line-height:1.45; margin:0; flex:1;">
@@ -3913,8 +3991,8 @@ function renderResources(){
       </div>
 
       <!-- Egyptian Unified Email Guidance Banner -->
-      <div class="card" style="margin-bottom:20px; padding:14px 18px; background:linear-gradient(135deg, rgba(78,205,196,0.08) 0%, rgba(88,166,255,0.08) 100%); border:1px solid rgba(78,205,196,0.25); display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
-        <div style="width:42px;height:42px;border-radius:12px;background:rgba(78,205,196,0.2);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:18px;flex-shrink:0">
+      <div class="card" style="margin-bottom:20px; padding:14px 18px; background:linear-gradient(135deg, rgba(var(--teal-rgb),0.08) 0%, rgba(var(--accent-rgb),0.08) 100%); border:1px solid rgba(var(--teal-rgb),0.25); display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div style="width:42px;height:42px;border-radius:12px;background:rgba(var(--teal-rgb),0.2);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:18px;flex-shrink:0">
           <i class="fas fa-school"></i>
         </div>
         <div style="flex:1;min-width:240px">
@@ -4021,10 +4099,10 @@ function filterRes(){
   if (empty) empty.style.display = 'none';
 
   const colors = {
-    Math: 'rgba(255,140,66,.12);color:var(--accent)',
+    Math: 'rgba(var(--accent-rgb),.12);color:var(--accent)',
     Arabic: 'rgba(239,68,68,.12);color:#EF4444',
     English: 'rgba(88,166,255,.12);color:var(--blue)',
-    Science: 'rgba(78,205,196,.12);color:var(--teal)',
+    Science: 'rgba(var(--teal-rgb),.12);color:var(--teal)',
     Physics: 'rgba(168,85,247,.12);color:#A855F7',
     Chemistry: 'rgba(6,182,212,.12);color:#06B6D4',
     Biology: 'rgba(34,197,94,.12);color:#22C55E',
@@ -4039,7 +4117,7 @@ function filterRes(){
     const displayName = isAr && arData.name ? arData.name : r.name;
     const displayDesc = isAr && arData.desc ? arData.desc : r.desc;
     const displayBadge = isAr && arData.badge 
-      ? `<span style="display:inline-flex;align-items:center;font-size:10px;padding:2px 8px;border-radius:12px;background:rgba(78,205,196,0.14);color:var(--teal);font-weight:600;margin-top:4px"><i class="fas fa-check-circle" style="margin-${isAr?'left':'right'}:4px"></i>${arData.badge}</span>` 
+      ? `<span style="display:inline-flex;align-items:center;font-size:10px;padding:2px 8px;border-radius:12px;background:rgba(var(--teal-rgb),0.14);color:var(--teal);font-weight:600;margin-top:4px"><i class="fas fa-check-circle" style="margin-${isAr?'left':'right'}:4px"></i>${arData.badge}</span>` 
       : '';
     const gradesText = formatResourceGrades(r.grades, isAr);
 
@@ -4055,7 +4133,7 @@ function filterRes(){
                 ${displayName}
               </div>
               <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:2px">
-                ${r.subjects.map(x=>`<span class="tag" style="background:${colors[x]||'rgba(78,205,196,.12);color:var(--teal)'};font-size:10px;padding:2px 6px">${isAr ? (RES_SUBJECT_AR[x] || x) : x}</span>`).join('')}
+                ${r.subjects.map(x=>`<span class="tag" style="background:${colors[x]||'rgba(var(--teal-rgb),.12);color:var(--teal)'};font-size:10px;padding:2px 6px">${isAr ? (RES_SUBJECT_AR[x] || x) : x}</span>`).join('')}
               </div>
             </div>
             <a href="${r.url}" target="_blank" rel="noopener" onclick="completeQuest('resource');" title="${isAr ? 'فتح الرابط في نافذة جديدة' : 'Open website'}" style="color:var(--text2);font-size:13px;padding:4px">
@@ -4079,12 +4157,13 @@ function filterRes(){
 
 // ======================== PROGRESS ========================
 let progressChart=null;
-function renderProgress(){updateUserPanel();const el=document.getElementById('view-progress'),ts=Store.get('sessions').length,tg=Store.get('games').length,tfm=Store.get('sessions').reduce((s,x)=>s+x.duration,0),txp=Store.get('totalXP'),ad=ts>0?(Store.get('sessions').reduce((s,x)=>s+x.distractions,0)/ts).toFixed(1):'0';const labels=[],fd=[],xd=[];for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*86400000);labels.push(d.toLocaleDateString('en',{weekday:'short'}));const ds=d.toDateString();fd.push(Store.get('sessions').filter(s=>new Date(s.date).toDateString()===ds).reduce((s,x)=>s+x.duration,0));xd.push(Store.get('games').filter(g=>new Date(g.date).toDateString()===ds).reduce((s,g)=>s+g.xp,0));}const games=Store.get('games').filter(g=>new Date(g.date).getTime()>Date.now()-7*86400000);const sessions=Store.get('sessions');el.innerHTML=`<div style="max-width:900px;margin:0 auto"><h1 style="font-size:26px;font-weight:700;margin-bottom:6px">Your Progress</h1><p style="color:var(--text2);margin-bottom:28px">Every minute counts.</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px"><div class="card stat-card"><div class="stat-num" style="color:var(--teal)">${tfm}m</div><div class="stat-label">Total focus</div></div><div class="card stat-card"><div class="stat-num" style="color:var(--accent)">${txp}</div><div class="stat-label">Total XP</div></div><div class="card stat-card"><div class="stat-num" style="color:var(--green)">${ts}</div><div class="stat-label">Sessions</div></div><div class="card stat-card"><div class="stat-num" style="color:var(--blue)">${tg}</div><div class="stat-label">Games played</div></div><div class="card stat-card"><div class="stat-num" style="color:var(--text)">${ad}</div><div class="stat-label">Avg distractions</div></div></div><div class="card" style="margin-bottom:28px"><h3 style="font-size:16px;margin-bottom:16px">Last 7 Days</h3><div style="position:relative;height:260px"><canvas id="progress-chart"></canvas></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px"><div class="card"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-bullseye" style="color:var(--teal)"></i> Recent Focus Sessions</h3>${!sessions.length?'<p style="color:var(--text2);font-size:14px">No focus sessions yet.</p>':`<div style="display:flex;flex-direction:column;gap:8px">${sessions.slice(-8).reverse().map(s=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px"><div style="width:36px;height:36px;border-radius:8px;background:var(--teal-g);display:flex;align-items:center;justify-content:center"><i class="fas fa-clock" style="color:var(--teal);font-size:14px"></i></div><div style="flex:1"><div style="font-weight:700;font-size:14px">${escHtml(s.task)}</div><div style="font-size:12px;color:var(--text2)">${new Date(s.date).toLocaleDateString()} &middot; ${s.distractions} distraction${s.distractions!==1?'s':''}</div></div><div style="text-align:right"><div style="font-weight:700;font-size:14px;color:var(--teal)">${s.duration}m</div><div style="font-size:12px;color:var(--green)">+${s.duration*2} XP</div></div></div>`).join('')}</div>`}</div><div class="card"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-gamepad" style="color:var(--accent)"></i> Recent Games</h3>${!games.length?'<p style="color:var(--text2);font-size:14px">No games played recently.</p>':`<div style="display:flex;flex-direction:column;gap:8px">${games.slice(-8).reverse().map(g=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px"><div style="width:36px;height:36px;border-radius:8px;background:rgba(255,140,66,.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-gamepad" style="color:var(--accent);font-size:14px"></i></div><div style="flex:1"><div style="font-weight:700;font-size:14px">Grade ${g.grade} Math</div><div style="font-size:12px;color:var(--text2)">${new Date(g.date).toLocaleDateString()}</div></div><div style="text-align:right"><div style="font-weight:700;font-size:14px;color:var(--green)">${g.score}/${g.total}</div><div style="font-size:12px;color:var(--accent)">+${g.xp} XP</div></div></div>`).join('')}</div>`}</div></div></div>`;if(progressChart)progressChart.destroy();const ctx=document.getElementById('progress-chart');if(ctx){progressChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Focus (min)',data:fd,backgroundColor:'rgba(78,205,196,0.6)',borderColor:'#4ECDC4',borderWidth:1,borderRadius:6,barPercentage:.5},{label:'XP Earned',data:xd,backgroundColor:'rgba(255,140,66,0.6)',borderColor:'#FF8C42',borderWidth:1,borderRadius:6,barPercentage:.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9B97A0',font:{family:'Nunito',weight:'600'}}}},scales:{x:{grid:{color:'rgba(42,42,61,0.5)'},ticks:{color:'#9B97A0',font:{family:'Nunito'}}},y:{grid:{color:'rgba(42,42,61,0.5)'},ticks:{color:'#9B97A0',font:{family:'Nunito'}},beginAtZero:true}}}});}}
+function renderProgress(){updateUserPanel();const el=document.getElementById('view-progress'),ts=Store.get('sessions').length,tg=Store.get('games').length,tfm=Store.get('sessions').reduce((s,x)=>s+x.duration,0),txp=Store.get('totalXP'),ad=ts>0?(Store.get('sessions').reduce((s,x)=>s+x.distractions,0)/ts).toFixed(1):'0';const labels=[],fd=[],xd=[];for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*86400000);labels.push(d.toLocaleDateString('en',{weekday:'short'}));const ds=d.toDateString();fd.push(Store.get('sessions').filter(s=>new Date(s.date).toDateString()===ds).reduce((s,x)=>s+x.duration,0));xd.push(Store.get('games').filter(g=>new Date(g.date).toDateString()===ds).reduce((s,g)=>s+g.xp,0));}const games=Store.get('games').filter(g=>new Date(g.date).getTime()>Date.now()-7*86400000);const sessions=Store.get('sessions');el.innerHTML=`<div style="max-width:900px;margin:0 auto"><h1 style="font-size:26px;font-weight:700;margin-bottom:6px">Your Progress</h1><p style="color:var(--text2);margin-bottom:28px">Every minute counts.</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px"><div class="card stat-card"><div class="stat-num" style="color:var(--teal)">${tfm}m</div><div class="stat-label">Total focus</div></div><div class="card stat-card"><div class="stat-num" style="color:var(--accent)">${txp}</div><div class="stat-label">Total XP</div></div><div class="card stat-card"><div class="stat-num" style="color:var(--green)">${ts}</div><div class="stat-label">Sessions</div></div><div class="card stat-card"><div class="stat-num" style="color:var(--blue)">${tg}</div><div class="stat-label">Games played</div></div><div class="card stat-card"><div class="stat-num" style="color:var(--text)">${ad}</div><div class="stat-label">Avg distractions</div></div></div><div class="card" style="margin-bottom:28px"><h3 style="font-size:16px;margin-bottom:16px">Last 7 Days</h3><div style="position:relative;height:260px"><canvas id="progress-chart"></canvas></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px"><div class="card"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-bullseye" style="color:var(--teal)"></i> Recent Focus Sessions</h3>${!sessions.length?'<p style="color:var(--text2);font-size:14px">No focus sessions yet.</p>':`<div style="display:flex;flex-direction:column;gap:8px">${sessions.slice(-8).reverse().map(s=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px"><div style="width:36px;height:36px;border-radius:8px;background:var(--teal-g);display:flex;align-items:center;justify-content:center"><i class="fas fa-clock" style="color:var(--teal);font-size:14px"></i></div><div style="flex:1"><div style="font-weight:700;font-size:14px">${escHtml(s.task)}</div><div style="font-size:12px;color:var(--text2)">${new Date(s.date).toLocaleDateString()} &middot; ${s.distractions} distraction${s.distractions!==1?'s':''}</div></div><div style="text-align:right"><div style="font-weight:700;font-size:14px;color:var(--teal)">${s.duration}m</div><div style="font-size:12px;color:var(--green)">+${s.duration*2} XP</div></div></div>`).join('')}</div>`}</div><div class="card"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-gamepad" style="color:var(--accent)"></i> Recent Games</h3>${!games.length?'<p style="color:var(--text2);font-size:14px">No games played recently.</p>':`<div style="display:flex;flex-direction:column;gap:8px">${games.slice(-8).reverse().map(g=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px"><div style="width:36px;height:36px;border-radius:8px;background:rgba(var(--accent-rgb),.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-gamepad" style="color:var(--accent);font-size:14px"></i></div><div style="flex:1"><div style="font-weight:700;font-size:14px">Grade ${g.grade} Math</div><div style="font-size:12px;color:var(--text2)">${new Date(g.date).toLocaleDateString()}</div></div><div style="text-align:right"><div style="font-weight:700;font-size:14px;color:var(--green)">${g.score}/${g.total}</div><div style="font-size:12px;color:var(--accent)">+${g.xp} XP</div></div></div>`).join('')}</div>`}</div></div></div>`;if(progressChart)progressChart.destroy();const ctx=document.getElementById('progress-chart');if(ctx){const cs=getComputedStyle(document.body);const tealHex=cs.getPropertyValue('--teal').trim()||'#4ECDC4';const tealRgb=cs.getPropertyValue('--teal-rgb').trim()||'78,205,196';const accHex=cs.getPropertyValue('--accent').trim()||'#FF8C42';const accRgb=cs.getPropertyValue('--accent-rgb').trim()||'255,140,66';const txt2=cs.getPropertyValue('--text2').trim()||'#9B97A0';const brd=cs.getPropertyValue('--border').trim()||'#2A2A3D';progressChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Focus (min)',data:fd,backgroundColor:`rgba(${tealRgb},0.6)`,borderColor:tealHex,borderWidth:1,borderRadius:6,barPercentage:.5},{label:'XP Earned',data:xd,backgroundColor:`rgba(${accRgb},0.6)`,borderColor:accHex,borderWidth:1,borderRadius:6,barPercentage:.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:txt2,font:{family:'Nunito',weight:'600'}}}},scales:{x:{grid:{color:brd},ticks:{color:txt2,font:{family:'Nunito'}}},y:{grid:{color:brd},ticks:{color:txt2,font:{family:'Nunito'}},beginAtZero:true}}}});}}
 
 // ======================== SETTINGS ========================
 function renderSettings(){
   updateUserPanel();
   const el=document.getElementById('view-settings');
+  if(!el) return;
   const u=Store.get('user')||{name:'',grade:2,color:'#FF8C42'};
   const s=Store.get('settings');
   const thoughts=Store.get('thoughts')||[];
@@ -4092,22 +4171,24 @@ function renderSettings(){
   const isAr = currentLang() === 'ar';
 
   const gradeSections=(sel)=>`
-    <div style="margin-bottom:6px">
-      <div style="font-size:11px;color:var(--text2);margin-bottom:4px">${isAr ? 'المرحلة الابتدائية' : 'Primary'}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${[1,2,3,4,5,6].map(g=>`<button class="grade-pill ${g===sel?'selected':''}" onclick="document.querySelectorAll('#view-settings .grade-pill').forEach(p=>p.classList.remove('selected'));this.classList.add('selected');this.dataset.val='${g}'" data-val="${g}">${g}</button>`).join('')}
+    <div id="settings-grades">
+      <div style="margin-bottom:6px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">${isAr ? 'المرحلة الابتدائية' : 'Primary'}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${[1,2,3,4,5,6].map(g=>`<button type="button" class="grade-pill ${g===sel?'selected':''}" onclick="document.querySelectorAll('#settings-grades .grade-pill').forEach(p=>p.classList.remove('selected'));this.classList.add('selected');" data-val="${g}">${g}</button>`).join('')}
+        </div>
       </div>
-    </div>
-    <div style="margin-bottom:6px">
-      <div style="font-size:11px;color:var(--text2);margin-bottom:4px">${isAr ? 'المرحلة الإعدادية' : 'Preparatory'}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${[7,8,9].map(g=>`<button class="grade-pill ${g===sel?'selected':''}" onclick="document.querySelectorAll('#view-settings .grade-pill').forEach(p=>p.classList.remove('selected'));this.classList.add('selected');this.dataset.val='${g}'" data-val="${g}">${g}</button>`).join('')}
+      <div style="margin-bottom:6px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">${isAr ? 'المرحلة الإعدادية' : 'Preparatory'}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${[7,8,9].map(g=>`<button type="button" class="grade-pill ${g===sel?'selected':''}" onclick="document.querySelectorAll('#settings-grades .grade-pill').forEach(p=>p.classList.remove('selected'));this.classList.add('selected');" data-val="${g}">${g}</button>`).join('')}
+        </div>
       </div>
-    </div>
-    <div>
-      <div style="font-size:11px;color:var(--text2);margin-bottom:4px">${isAr ? 'المرحلة الثانوية (الثانوية العامة)' : 'Secondary (Thanawya Amma)'}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${[10,11,12].map(g=>`<button class="grade-pill ${g===sel?'selected':''}" onclick="document.querySelectorAll('#view-settings .grade-pill').forEach(p=>p.classList.remove('selected'));this.classList.add('selected');this.dataset.val='${g}'" data-val="${g}">${g}</button>`).join('')}
+      <div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">${isAr ? 'المرحلة الثانوية (الثانوية العامة)' : 'Secondary (Thanawya Amma)'}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${[10,11,12].map(g=>`<button type="button" class="grade-pill ${g===sel?'selected':''}" onclick="document.querySelectorAll('#settings-grades .grade-pill').forEach(p=>p.classList.remove('selected'));this.classList.add('selected');" data-val="${g}">${g}</button>`).join('')}
+        </div>
       </div>
     </div>
   `;
@@ -4119,13 +4200,13 @@ function renderSettings(){
           <h1 style="font-size:26px;font-weight:700;margin-bottom:4px">${isAr ? 'الإعدادات والتخصيص' : 'Settings & Preferences'}</h1>
           <p style="color:var(--text2);">${isAr ? 'تخصيص تجربة التعلّم ومنصة طالب القبس بالكامل.' : 'Customize your Talib Al Qabas learning environment.'}</p>
         </div>
-        <div class="tag" style="background:rgba(78,205,196,0.15);color:var(--teal);padding:6px 12px;font-weight:700;">
+        <div class="tag" style="background:rgba(var(--teal-rgb),0.15);color:var(--teal);padding:6px 12px;font-weight:700;">
           <i class="fas fa-bolt"></i> ${isAr ? 'منصة طالب القبس' : 'Talib Al Qabas Platform'}
         </div>
       </div>
 
       <!-- Language & RTL Settings Card -->
-      <div class="card" style="margin-bottom:20px;border-color:rgba(78,205,196,0.35);">
+      <div class="card" style="margin-bottom:20px;border-color:rgba(var(--teal-rgb),0.35);">
         <h3 style="font-size:16px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
           <i class="fas fa-globe" style="color:var(--teal);"></i> ${isAr ? 'اللغة والاتجاه (Language & Direction)' : 'Language & Interface Direction'}
         </h3>
@@ -4133,10 +4214,10 @@ function renderSettings(){
           ${isAr ? 'التبديل بين الواجهة العربية مع المحاذاة الكاملة من اليمين لليسار (RTL) والواجهة الإنجليزية (LTR).' : 'Toggle between full Arabic with Right-to-Left (RTL) alignment and English (LTR).'}
         </p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="grade-pill ${isAr ? 'selected' : ''}" onclick="setLanguage('ar')" style="padding:10px 18px;font-weight:700;font-size:14px;font-family:'Cairo',sans-serif;display:flex;align-items:center;gap:8px;">
+          <button type="button" class="grade-pill ${isAr ? 'selected' : ''}" onclick="setLanguage('ar')" style="padding:10px 18px;font-weight:700;font-size:14px;font-family:'Cairo',sans-serif;display:flex;align-items:center;gap:8px;">
             <i class="fas fa-check" style="display:${isAr ? 'inline-block' : 'none'};color:var(--teal);"></i> العربية (RTL)
           </button>
-          <button class="grade-pill ${!isAr ? 'selected' : ''}" onclick="setLanguage('en')" style="padding:10px 18px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;">
+          <button type="button" class="grade-pill ${!isAr ? 'selected' : ''}" onclick="setLanguage('en')" style="padding:10px 18px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;">
             <i class="fas fa-check" style="display:${!isAr ? 'inline-block' : 'none'};color:var(--teal);"></i> English (LTR)
           </button>
         </div>
@@ -4149,31 +4230,21 @@ function renderSettings(){
         </h3>
         <div style="margin-bottom:12px">
           <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:4px">${isAr ? 'الاسم' : 'Name'}</label>
-          <input class="input" id="set-name" value="${u.name}" placeholder="${isAr ? 'اكتب اسمك...' : 'Your name'}">
+          <input class="input" id="set-name" value="${escHtml(u.name)}" placeholder="${isAr ? 'اكتب اسمك...' : 'Your name'}">
         </div>
         <div style="margin-bottom:12px">
           <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:4px">${isAr ? 'المرحلة والصف الدراسي' : 'Grade'}</label>
           ${gradeSections(u.grade)}
         </div>
         <div>
-          <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">${isAr ? 'اللون المميّز' : 'Color'}</label>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            ${(function() {
-              const ownedColors = Store.get('inventory').colors || ['#FF8C42'];
-              return ['#FF8C42','#4ECDC4','#FF6B6B','#58A6FF','#A855F7','#22C55E','#EC4899','#FBBF24'].map(c => {
-                const isOwned = ownedColors.includes(c);
-                if (isOwned) {
-                  return `<div class="color-opt ${c===u.color?'selected':''}" style="background:${c}" data-color="${c}" onclick="document.querySelectorAll('.color-opt').forEach(o=>o.classList.remove('selected'));this.classList.add('selected')"></div>`;
-                } else {
-                  return `<div class="color-opt locked-color" style="background:${c}; position:relative; display:flex; align-items:center; justify-content:center; opacity:0.4; cursor:pointer;" onclick="navigate('store'); toast('${isAr ? 'قم بفتح هذا اللون من المتجر أولاً!' : 'Unlock this color in the Store first!'}','info')">
-                    <i class="fas fa-lock" style="font-size:11px; color:#fff;"></i>
-                  </div>`;
-                }
-              }).join('');
-            })()}
+          <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">${isAr ? 'اللون المميّز للمنصة بالكامل' : 'Global Profile Color'}</label>
+          <div id="settings-colors" style="display:flex;gap:8px;flex-wrap:wrap">
+            ${['#FF8C42','#4ECDC4','#FF6B6B','#58A6FF','#A855F7','#22C55E','#EC4899','#FBBF24'].map(c =>
+              `<div class="color-opt ${c.toUpperCase()===(u.color||'').toUpperCase()?'selected':''}" style="background:${c}" data-color="${c}" onclick="selectSettingsColor('${c}')"></div>`
+            ).join('')}
           </div>
         </div>
-        <button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="saveProfile()">${isAr ? 'حفظ الملف الشخصي' : 'Save Profile'}</button>
+        <button type="button" class="btn btn-primary btn-sm" style="margin-top:14px" onclick="saveProfile()">${isAr ? 'حفظ الملف الشخصي' : 'Save Profile'}</button>
       </div>
 
       <!-- Focus Durations Card -->
@@ -4184,36 +4255,36 @@ function renderSettings(){
         <div>
           <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">${isAr ? 'مدة التركيز الافتراضية' : 'Default focus duration'}</label>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
-            ${[5,10,15,20,25,30,45,60].map(m=>`<button class="grade-pill ${m===s.focusDuration?'selected':''}" onclick="Store.get('settings').focusDuration=${m};Store.save();SFX.click();renderSettings()">${m} ${isAr ? 'دقيقة' : 'min'}</button>`).join('')}
+            ${[5,10,15,20,25,30,45,60].map(m=>`<button type="button" class="grade-pill ${m===s.focusDuration?'selected':''}" onclick="Store.get('settings').focusDuration=${m};Store.save();SFX.click();renderSettings()">${m} ${isAr ? 'دقيقة' : 'min'}</button>`).join('')}
           </div>
         </div>
         <div style="margin-top:12px;">
           <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">${isAr ? 'مدة الاستراحة الافتراضية' : 'Default break duration'}</label>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
-            ${[3, 5, 10].map(m => `<button class="grade-pill ${m === s.breakDuration ? 'selected' : ''}" onclick="Store.get('settings').breakDuration=${m};Store.save();SFX.click();renderSettings()">${m} ${isAr ? 'دقيقة' : 'min'}</button>`).join('')}
+            ${[3, 5, 10].map(m => `<button type="button" class="grade-pill ${m === s.breakDuration ? 'selected' : ''}" onclick="Store.get('settings').breakDuration=${m};Store.save();SFX.click();renderSettings()">${m} ${isAr ? 'دقيقة' : 'min'}</button>`).join('')}
           </div>
         </div>
       </div>
 
     <!-- Schedule & Timetable Customization -->
-    <div class="card" style="margin-bottom:20px;border-color:rgba(78,205,196,.25)">
+    <div class="card" style="margin-bottom:20px;border-color:rgba(var(--teal-rgb),.25)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
         <h3 style="font-size:16px;margin:0;display:flex;align-items:center;gap:8px">
-          <i class="fas fa-calendar-days" style="color:var(--teal)"></i> Schedule & Timetable Settings
+          <i class="fas fa-calendar-days" style="color:var(--teal)"></i> ${isAr ? 'إعدادات الجدول الأسبوعي' : 'Schedule & Timetable Settings'}
         </h3>
-        <button class="btn btn-sm btn-ghost" onclick="showScheduleSettingsModal()" style="border:1px solid var(--border); font-size:12px;">
-          <i class="fas fa-sliders"></i> Open Customizer
+        <button type="button" class="btn btn-sm btn-ghost" onclick="showScheduleSettingsModal()" style="border:1px solid var(--border); font-size:12px;">
+          <i class="fas fa-sliders"></i> ${isAr ? 'فتح المخصّص' : 'Open Customizer'}
         </button>
       </div>
       <div style="margin-bottom:14px;">
-        <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">Week Starts On</label>
+        <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">${isAr ? 'يبدأ الأسبوع يوم' : 'Week Starts On'}</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           ${[
-            { val: 6, label: 'Saturday', note: 'Egypt & Middle East' },
-            { val: 0, label: 'Sunday', note: 'North America / Japan' },
-            { val: 1, label: 'Monday', note: 'International ISO / Europe' }
+            { val: 6, label: isAr ? 'السبت' : 'Saturday', note: isAr ? 'مصر والشرق الأوسط' : 'Egypt & Middle East' },
+            { val: 0, label: isAr ? 'الأحد' : 'Sunday', note: isAr ? 'أمريكا الشمالية / اليابان' : 'North America / Japan' },
+            { val: 1, label: isAr ? 'الإثنين' : 'Monday', note: isAr ? 'المعيار الدولي / أوروبا' : 'International ISO / Europe' }
           ].map(opt => `
-            <button class="grade-pill ${sched.weekStartDay === opt.val ? 'selected' : ''}" 
+            <button type="button" class="grade-pill ${sched.weekStartDay === opt.val ? 'selected' : ''}" 
                     onclick="saveScheduleSettings(${opt.val}, ${sched.dayStartHour}, ${sched.dayEndHour})" 
                     style="padding:8px 14px; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
               <span style="font-weight:700;">${opt.label}</span>
@@ -4224,10 +4295,10 @@ function renderSettings(){
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;margin-bottom:14px;">
         <div>
-          <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">Day Starts At (Earliest Timetable Hour)</label>
+          <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">${isAr ? 'بداية اليوم الدراسي' : 'Day Starts At (Earliest Timetable Hour)'}</label>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
             ${[4, 5, 6, 7, 8, 9, 10].map(h => `
-              <button class="grade-pill ${sched.dayStartHour === h ? 'selected' : ''}" 
+              <button type="button" class="grade-pill ${sched.dayStartHour === h ? 'selected' : ''}" 
                       onclick="saveScheduleSettings(${sched.weekStartDay}, ${h}, ${sched.dayEndHour})">
                 ${formatHour12(h)}
               </button>
@@ -4235,10 +4306,10 @@ function renderSettings(){
           </div>
         </div>
         <div>
-          <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">Day Ends At (Latest Timetable Hour)</label>
+          <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">${isAr ? 'نهاية اليوم الدراسي' : 'Day Ends At (Latest Timetable Hour)'}</label>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
             ${[17, 18, 19, 20, 21, 22, 23].map(h => `
-              <button class="grade-pill ${sched.dayEndHour === h ? 'selected' : ''}" 
+              <button type="button" class="grade-pill ${sched.dayEndHour === h ? 'selected' : ''}" 
                       onclick="saveScheduleSettings(${sched.weekStartDay}, ${sched.dayStartHour}, ${h})">
                 ${formatHour12(h)}
               </button>
@@ -4248,20 +4319,69 @@ function renderSettings(){
       </div>
       <div style="font-size:12px;color:var(--text2);background:var(--bg);padding:8px 12px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;gap:6px;">
         <i class="fas fa-info-circle" style="color:var(--teal)"></i>
-        <span>Currently showing <strong>${{6:'Saturday',0:'Sunday',1:'Monday'}[sched.weekStartDay] || 'Custom'}</strong> as week start &middot; <strong>${formatHour12(sched.dayStartHour)} to ${formatHour12(sched.dayEndHour)}</strong> (${Math.max(1, sched.dayEndHour - sched.dayStartHour + 1)} hours/day).</span>
+        <span>${isAr ? 'الإعداد الحالي:' : 'Currently showing'} <strong>${{6:isAr?'السبت':'Saturday',0:isAr?'الأحد':'Sunday',1:isAr?'الإثنين':'Monday'}[sched.weekStartDay] || 'Custom'}</strong> &middot; <strong>${formatHour12(sched.dayStartHour)} – ${formatHour12(sched.dayEndHour)}</strong></span>
       </div>
     </div>
-<div class="card" style="margin-bottom:20px;border-color:rgba(255,140,66,.2)"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-shield-alt" style="color:var(--accent);margin-right:8px"></i>Focus Mode</h3>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div><div style="font-weight:700;font-size:14px">Strict Focus Mode</div><div style="font-size:12px;color:var(--text2)">Adds a 5-second delay to stop timer and warns on tab close.</div></div><button class="btn ${s.strictMode?'btn-primary':'btn-secondary'} btn-sm" onclick="toggleStrict()">${s.strictMode?'Strict ON':'Strict OFF'}</button></div></div>
-<div class="card" style="margin-bottom:20px;border-color:rgba(78,205,196,.15)"><h3 style="font-size:16px;margin-bottom:6px;display:flex;align-items:center;gap:8px"><i class="fas fa-cloud" style="color:var(--teal)"></i> Thought Journal</h3><p style="font-size:13px;color:var(--text2);margin-bottom:14px">Ideas you parked during focus sessions. Safe here for later.</p>${!thoughts.length?'<p style="font-size:14px;color:var(--text2);padding:12px 0">No thoughts yet. Use the Thought Dump during your next focus session.</p>':`<div style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto">${thoughts.slice(0,50).map(t=>`<div class="thought-entry"><div class="thought-text">${t.text}</div><div class="thought-time">${new Date(t.date).toLocaleDateString()} ${new Date(t.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('')}</div>${thoughts.length>50?`<div style="font-size:12px;color:var(--text2);margin-top:8px">Showing 50 of ${thoughts.length}</div>`:''}<button class="btn btn-sm btn-ghost" style="margin-top:10px;color:var(--red);border:1px solid rgba(255,107,107,.2)" onclick="Store.set('thoughts',[]);renderSettings();toast('Journal cleared','info')"><i class="fas fa-trash"></i> Clear Journal</button>`}</div>
-    <div class="card" style="margin-bottom:20px;border-color:rgba(255,140,66,.2)"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-lightbulb" style="color:var(--accent);margin-right:8px"></i>ADHD-Friendly Features</h3><div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--text2);line-height:1.5"><div><span style="color:var(--teal);font-weight:700">Task Breaker</span> — Big tasks become 6 tiny steps.</div><div><span style="color:var(--teal);font-weight:700">"Just Start" Timer</span> — Commit to 10 minutes. Minute zero is the real battle.</div><div><span style="color:var(--teal);font-weight:700">Pause Nudge</span> — Gentle reminder if you pause too long.</div><div><span style="color:var(--teal);font-weight:700">Body Doubling</span> — A study buddy works alongside you.</div><div><span style="color:var(--teal);font-weight:700">Thought Dump</span> — Park random ideas and release them. Saved for later.</div><div><span style="color:var(--teal);font-weight:700">Brown Noise & Rain</span> — Cancels the noise inside your head.</div><div><span style="color:var(--teal);font-weight:700">Surprise Bonuses</span> — Random XP keeps your brain engaged.</div><div><span style="color:var(--teal);font-weight:700">Focus Shield</span> — Removes the "just check one thing" trap.</div></div></div>
-    <div class="card"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-database" style="color:var(--text2);margin-right:8px"></i>Data</h3><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-sm btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Export Data</button><button class="btn btn-sm" style="background:var(--red);color:#fff" onclick="clearData()"><i class="fas fa-trash"></i> Clear All Data</button></div><p style="font-size:12px;color:var(--text2);margin-top:8px">All data stored locally in your browser. Nothing sent to any server.</p></div></div>`;
+<div class="card" style="margin-bottom:20px;border-color:rgba(var(--accent-rgb),.2)"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-shield-alt" style="color:var(--accent);margin-right:8px"></i>${isAr ? 'وضع التركيز' : 'Focus Mode'}</h3>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px;flex-wrap:wrap"><div><div style="font-weight:700;font-size:14px">${isAr ? 'وضع الانضباط الصارم' : 'Strict Focus Mode'}</div><div style="font-size:12px;color:var(--text2)">${isAr ? 'يضيف مهلة انتظار 5 ثوانٍ قبل إيقاف المؤقت وينبّه عند إغلاق التبويب.' : 'Adds a 5-second delay to stop timer and warns on tab close.'}</div></div><button type="button" class="btn ${s.strictMode?'btn-primary':'btn-secondary'} btn-sm" onclick="toggleStrict()">${s.strictMode?(isAr?'مُفعّل':'Strict ON'):(isAr?'مُعطّل':'Strict OFF')}</button></div></div>
+<div class="card" style="margin-bottom:20px;border-color:rgba(var(--teal-rgb),.15)"><h3 style="font-size:16px;margin-bottom:6px;display:flex;align-items:center;gap:8px"><i class="fas fa-cloud" style="color:var(--teal)"></i> ${isAr ? 'سجل الأفكار المشتتة' : 'Thought Journal'}</h3><p style="font-size:13px;color:var(--text2);margin-bottom:14px">${isAr ? 'الأفكار التي دوّنتها أثناء جلسات التركيز محفوظة هنا.' : 'Ideas you parked during focus sessions. Safe here for later.'}</p>${!thoughts.length?`<p style="font-size:14px;color:var(--text2);padding:12px 0">${isAr ? 'لا توجد أفكار مسجلة بعد.' : 'No thoughts yet. Use the Thought Dump during your next focus session.'}</p>`:`<div style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto">${thoughts.slice(0,50).map(t=>`<div class="thought-entry"><div class="thought-text">${escHtml(t.text)}</div><div class="thought-time">${new Date(t.date).toLocaleDateString()} ${new Date(t.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('')}</div>${thoughts.length>50?`<div style="font-size:12px;color:var(--text2);margin-top:8px">Showing 50 of ${thoughts.length}</div>`:''}<button type="button" class="btn btn-sm btn-ghost" style="margin-top:10px;color:var(--red);border:1px solid rgba(255,107,107,.2)" onclick="Store.set('thoughts',[]);renderSettings();toast('${isAr ? 'تم مسح السجل' : 'Journal cleared'}','info')"><i class="fas fa-trash"></i> ${isAr ? 'مسح السجل' : 'Clear Journal'}</button>`}</div>
+    <div class="card" style="margin-bottom:20px;border-color:rgba(var(--accent-rgb),.2)"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-lightbulb" style="color:var(--accent);margin-right:8px"></i>${isAr ? 'مزايا داعمة للتركيز' : 'ADHD-Friendly Features'}</h3><div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--text2);line-height:1.5"><div><span style="color:var(--teal);font-weight:700">Task Breaker</span> — Big tasks become 6 tiny steps.</div><div><span style="color:var(--teal);font-weight:700">"Just Start" Timer</span> — Commit to 10 minutes. Minute zero is the real battle.</div><div><span style="color:var(--teal);font-weight:700">Pause Nudge</span> — Gentle reminder if you pause too long.</div><div><span style="color:var(--teal);font-weight:700">Body Doubling</span> — A study buddy works alongside you.</div><div><span style="color:var(--teal);font-weight:700">Thought Dump</span> — Park random ideas and release them. Saved for later.</div><div><span style="color:var(--teal);font-weight:700">Brown Noise & Rain</span> — Cancels the noise inside your head.</div><div><span style="color:var(--teal);font-weight:700">Surprise Bonuses</span> — Random XP keeps your brain engaged.</div><div><span style="color:var(--teal);font-weight:700">Focus Shield</span> — Removes the "just check one thing" trap.</div></div></div>
+    <div class="card"><h3 style="font-size:16px;margin-bottom:14px"><i class="fas fa-database" style="color:var(--text2);margin-right:8px"></i>${isAr ? 'البيانات والنسخ الاحتياطي' : 'Data'}</h3><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn btn-sm btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> ${isAr ? 'تصدير البيانات' : 'Export Data'}</button><button type="button" class="btn btn-sm" style="background:var(--red);color:#fff" onclick="clearData()"><i class="fas fa-trash"></i> ${isAr ? 'مسح جميع البيانات' : 'Clear All Data'}</button></div><p style="font-size:12px;color:var(--text2);margin-top:8px">${isAr ? 'تُحفظ جميع بياناتك محلياً في متصفحك ولا تُرسل لأي خادم خارجي.' : 'All data stored locally in your browser. Nothing sent to any server.'}</p></div></div>`;
   genBookmarklet();
+}
+
+function selectSettingsColor(hexColor) {
+  document.querySelectorAll('#settings-colors .color-opt').forEach(o => o.classList.remove('selected'));
+  const el = document.querySelector(`#settings-colors .color-opt[data-color="${hexColor}"]`);
+  if (el) el.classList.add('selected');
+
+  const u = Store.get('user') || { name: '', grade: 2, color: hexColor };
+  u.color = hexColor;
+  Store.set('user', u);
+
+  const inv = Store.get('inventory') || { colors: ['#FF8C42'], equipped: {} };
+  if (!Array.isArray(inv.colors)) inv.colors = [];
+  if (!inv.colors.includes(hexColor)) inv.colors.push(hexColor);
+  if (!inv.equipped) inv.equipped = {};
+  inv.equipped.color = hexColor;
+  if (inv.equipped.theme && inv.equipped.theme !== 'light' && inv.equipped.theme !== 'default') {
+    inv.equipped.theme = 'default';
+  }
+  Store.set('inventory', inv);
+
+  applyAccentColor(hexColor);
+  updateUserPanel();
+  SFX.click();
 }
 
 function toggleStrict(){const s=Store.get('settings');s.strictMode=!s.strictMode;Store.set('settings',s);renderSettings();toast(s.strictMode?'Strict Mode Enabled':'Strict Mode Disabled','info');}
 
-function saveProfile(){const n=document.getElementById('set-name').value.trim();if(!n){toast('Please enter your name','warn');return;}const g=document.querySelector('#view-settings .grade-pill.selected[data-val]'),gr=g?parseInt(g.dataset.val):2,c=document.querySelector('.color-opt.selected'),cl=c?c.dataset.color:'#FF8C42';Store.set('user',{name:n,grade:gr,color:cl});updateUserPanel();toast('Profile saved!','success');SFX.click();}
+function saveProfile(){
+  const isAr = typeof currentLang === 'function' && currentLang() === 'ar';
+  const n = document.getElementById('set-name').value.trim();
+  if(!n){toast(isAr ? 'يرجى كتابة اسمك' : 'Please enter your name','warn');return;}
+  const g = document.querySelector('#settings-grades .grade-pill.selected[data-val]');
+  const gr = g ? parseInt(g.dataset.val, 10) : 2;
+  const c = document.querySelector('#settings-colors .color-opt.selected');
+  const prevUser = Store.get('user') || {};
+  const cl = c ? c.dataset.color : (prevUser.color || '#FF8C42');
+  Store.set('user',{name:n,grade:gr,color:cl});
+
+  const inv = Store.get('inventory') || { colors: [cl], equipped: {} };
+  if (!Array.isArray(inv.colors)) inv.colors = [];
+  if (!inv.colors.includes(cl)) inv.colors.push(cl);
+  if (!inv.equipped) inv.equipped = {};
+  inv.equipped.color = cl;
+  if (inv.equipped.theme && inv.equipped.theme !== 'light' && inv.equipped.theme !== 'default') {
+    inv.equipped.theme = 'default';
+  }
+  Store.set('inventory', inv);
+
+  applyAccentColor(cl);
+  updateUserPanel();
+  toast(isAr ? 'تم حفظ الملف الشخصي بنجاح!' : 'Profile saved!','success');
+  SFX.click();
+}
 function saveWhitelist(){const t=document.getElementById('whitelist-input').value,w=t.split('\n').map(s=>s.trim().toLowerCase()).filter(s=>s&&!s.startsWith('//')&&!s.startsWith('#'));Store.get('settings').whitelist=w;Store.save();genBookmarklet();toast('Whitelist updated!','success');}
 function genBookmarklet(){const w=JSON.stringify(Store.get('settings').whitelist),u=location.href.split('#')[0]+'#focus',c=`javascript:void((function(){var w=${w},h=location.hostname.toLowerCase(),ok=w.some(function(d){return h.indexOf(d)!==-1});if(!ok){location.href='${u}';}else{var m=document.createElement('div');m.style.cssText='position:fixed;top:20px;right:20px;z-index:99999;padding:12px 20px;background:#1C1C2A;color:#4ECDC4;border-radius:10px;font-family:sans-serif;font-size:14px;font-weight:bold;box-shadow:0 8px 25px rgba(0,0,0,0.5)';m.textContent='\\u2713 Productive site. Keep going!';document.body.appendChild(m);setTimeout(function(){m.remove()},2000);}})())`;const l=document.getElementById('bookmarklet-link');if(l)l.href=c;}
 function exportData(){const b=new Blob([JSON.stringify(Store._d,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='talib-al-qabas-data.json';a.click();toast('Data exported!','success');}
@@ -4705,7 +4825,7 @@ function renderCalcDesmosTab() {
           <span style="font-weight:700; font-size:14px; color:var(--teal); display:inline-flex; align-items:center; gap:6px;">
             <i class="fas fa-chart-line"></i> ${isAr ? 'حاسبة الرسوم البيانية ثنائية الأبعاد Desmos API' : 'Desmos API 2D Graphing Calculator'}
           </span>
-          <span class="tag" style="background:rgba(78,205,196,0.12); color:var(--teal); font-size:11px;">
+          <span class="tag" style="background:rgba(var(--teal-rgb),0.12); color:var(--teal); font-size:11px;">
             ${isAr ? 'واجهة الويب الرسمية' : 'Official Web API'}
           </span>
         </div>
@@ -5469,7 +5589,7 @@ function renderCalcScratchpadTab() {
       <!-- Banner with Explanation -->
       <div style="background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
         <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:38px; height:38px; border-radius:10px; background:rgba(78,205,196,0.12); display:flex; align-items:center; justify-content:center; color:var(--teal);">
+          <div style="width:38px; height:38px; border-radius:10px; background:rgba(var(--teal-rgb),0.12); display:flex; align-items:center; justify-content:center; color:var(--teal);">
             <i class="fas fa-square-root-variable" style="font-size:18px;"></i>
           </div>
           <div>
@@ -5495,7 +5615,7 @@ function renderCalcScratchpadTab() {
             <span style="font-weight:700; font-size:14px; color:var(--text); display:inline-flex; align-items:center; gap:6px;">
               <i class="fas fa-pen-to-square" style="color:var(--teal);"></i> ${isAr ? 'مساحة كتابة المعادلات المخصصة' : 'Formula Custom Text Area'}
             </span>
-            <span class="tag" style="background:rgba(255,140,66,0.12); color:var(--accent); font-size:11px;">
+            <span class="tag" style="background:rgba(var(--accent-rgb),0.12); color:var(--accent); font-size:11px;">
               ${isAr ? 'صيغة LaTeX الرياضية' : 'LaTeX & Math Syntax'}
             </span>
           </div>
@@ -5549,7 +5669,7 @@ function renderCalcScratchpadTab() {
             <span style="font-weight:700; font-size:14px; color:var(--text); display:inline-flex; align-items:center; gap:6px;">
               <i class="fas fa-eye" style="color:var(--teal);"></i> ${isAr ? 'المعاينة الرياضية (مطابقة لخطوط Desmos)' : 'Rendered Output (Matches Desmos Typography)'}
             </span>
-            <span class="tag" style="background:rgba(78,205,196,0.12); color:var(--teal); font-size:11px;">
+            <span class="tag" style="background:rgba(var(--teal-rgb),0.12); color:var(--teal); font-size:11px;">
               ${isAr ? 'عالي الدقة KaTeX' : 'KaTeX High-DPI'}
             </span>
           </div>
@@ -5847,7 +5967,7 @@ function renderCalcNativeTab() {
         <div class="calc-history-header">
           <div class="calc-history-title">
             <i class="fas fa-clock-rotate-left" style="color:var(--teal);"></i> ${isAr ? 'سجل الحسابات' : 'History'}
-            ${history.length > 0 ? `<span class="tag" style="background:rgba(78,205,196,0.15); color:var(--teal); font-size:11px; padding:2px 7px;">${history.length}</span>` : ''}
+            ${history.length > 0 ? `<span class="tag" style="background:rgba(var(--teal-rgb),0.15); color:var(--teal); font-size:11px; padding:2px 7px;">${history.length}</span>` : ''}
           </div>
           ${history.length > 0 ? `
             <button class="btn btn-xs btn-ghost" onclick="calcClearHistory()" title="${isAr ? 'مسح السجل' : 'Clear History'}" style="color:var(--red);">
@@ -5912,7 +6032,7 @@ function renderCalcFormulasTab() {
           <div class="formula-card">
             <div style="display:flex; align-items:center; justify-content:space-between;">
               <span style="font-weight:700; font-size:15px; color:var(--text);">${escHtml(fName)}</span>
-              <span class="tag" style="background:rgba(78,205,196,0.12); color:var(--teal); font-size:11px; text-transform:capitalize;">
+              <span class="tag" style="background:rgba(var(--teal-rgb),0.12); color:var(--teal); font-size:11px; text-transform:capitalize;">
                 ${escHtml(fCat)}
               </span>
             </div>
@@ -6579,7 +6699,7 @@ async function renderFlashDeckList(el){
         <button class="btn btn-primary btn-sm" onclick="showCreateDeckModal()"><i class="fas fa-plus"></i> ${isAr ? 'حزمة جديدة' : 'New Deck'}</button>
       </div>
     </div>
-    ${totalDue>0?`<div class="card" style="margin-bottom:20px;border-color:rgba(255,140,66,.3);display:flex;align-items:center;gap:12px;padding:14px 18px"><i class="fas fa-bell" style="color:var(--accent)"></i><span style="font-size:14px">${isAr ? `لديك <strong>${totalDue}</strong> بطاقة جاهزة للمراجعة عبر حزمك الدراسية` : `<strong>${totalDue}</strong> card${totalDue!==1?'s':''} due for review across your decks`}</span></div>`:''}
+    ${totalDue>0?`<div class="card" style="margin-bottom:20px;border-color:rgba(var(--accent-rgb),.3);display:flex;align-items:center;gap:12px;padding:14px 18px"><i class="fas fa-bell" style="color:var(--accent)"></i><span style="font-size:14px">${isAr ? `لديك <strong>${totalDue}</strong> بطاقة جاهزة للمراجعة عبر حزمك الدراسية` : `<strong>${totalDue}</strong> card${totalDue!==1?'s':''} due for review across your decks`}</span></div>`:''}
     ${!decks.length?`<div class="card" style="text-align:center;padding:48px 24px"><i class="fas fa-clone" style="font-size:40px;color:var(--text2);margin-bottom:16px;display:block"></i><h3 style="font-size:18px;margin-bottom:8px">${isAr ? 'لا توجد حزم بطاقات بعد' : 'No decks yet'}</h3><p style="color:var(--text2);margin-bottom:20px;font-size:14px">${isAr ? 'أنشئ حزمة مخصصة، أو استورد ملف JSON، أو حمّل الحزم النموذجية الجاهزة للمذاكرة بنظام SM-2 للتكرار المتباعد.' : 'Create a deck, import JSON, or load preset starter decks to start studying with SM-2 spaced repetition.'}</p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="showCreateDeckModal()"><i class="fas fa-plus"></i> ${isAr ? 'إنشاء حزمة' : 'Create Deck'}</button>
@@ -7130,7 +7250,7 @@ function renderPlanner() {
               <i class="fas fa-trophy"></i> Goal Reached!
             </span>
           ` : `
-            <span class="tag" style="padding:6px 12px; font-size:12px; background:rgba(78,205,196,0.1); color:var(--teal);">
+            <span class="tag" style="padding:6px 12px; font-size:12px; background:rgba(var(--teal-rgb),0.1); color:var(--teal);">
               ${dailyGoal - todayFocusMin}m remaining today
             </span>
           `}
@@ -7189,7 +7309,7 @@ function renderTaskCard(t) {
             <span class="tag" style="background:${catColor}22; color:${catColor}; font-size:11px; font-weight:700;">${t.category || 'Personal'}</span>
             <span style="font-size:12px; color:var(--text2);"><i class="fas fa-clock"></i> ~${t.estMin || 15} min</span>
             ${t.scheduledDate ? `
-              <span class="tag" style="background:rgba(78,205,196,0.12); color:var(--teal); font-size:11px; cursor:pointer;" onclick="navigate('schedule')" title="Click to view on Timetable">
+              <span class="tag" style="background:rgba(var(--teal-rgb),0.12); color:var(--teal); font-size:11px; cursor:pointer;" onclick="navigate('schedule')" title="Click to view on Timetable">
                 <i class="fas fa-calendar-day"></i> ${t.scheduledDate} ${t.scheduledTime ? `at ${t.scheduledTime}` : ''}
               </span>
             ` : `
@@ -7794,7 +7914,7 @@ function renderSchedule() {
           <div style="font-family:'Fredoka',sans-serif; font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px;">
             <i class="far fa-calendar-alt" style="color:var(--accent);"></i>
             <span>${weekStart} – ${weekEnd}</span>
-            ${isCurrentWeek ? `<span class="tag" style="background:rgba(78,205,196,0.15); color:var(--teal); font-size:12px; font-family:'Nunito';">This Week</span>` : ''}
+            ${isCurrentWeek ? `<span class="tag" style="background:rgba(var(--teal-rgb),0.15); color:var(--teal); font-size:12px; font-family:'Nunito';">This Week</span>` : ''}
           </div>
           <div style="display:flex; align-items:center; gap:6px;">
             <span class="tag" style="background:var(--bg); border:1px solid var(--border); font-size:11px; cursor:pointer; font-family:'Nunito'; font-weight:600;" onclick="showScheduleSettingsModal()" title="Click to customize schedule hours and start day">
@@ -7840,7 +7960,7 @@ function renderSchedule() {
       </div>
 
       ${unscheduledTasks.length > 0 ? `
-        <div class="card card-glow" style="margin-bottom:20px; padding:14px 18px; background:linear-gradient(135deg, rgba(78,205,196,0.08) 0%, var(--card) 100%); border-color:rgba(78,205,196,0.3); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <div class="card card-glow" style="margin-bottom:20px; padding:14px 18px; background:linear-gradient(135deg, rgba(var(--teal-rgb),0.08) 0%, var(--card) 100%); border-color:rgba(var(--teal-rgb),0.3); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
           <div style="display:flex; align-items:center; gap:10px;">
             <div style="width:36px; height:36px; border-radius:10px; background:var(--teal-g); display:flex; align-items:center; justify-content:center; color:var(--teal);">
               <i class="fas fa-sparkles"></i>
@@ -8081,7 +8201,7 @@ function renderScheduleAgenda(days) {
                             ${escHtml(t.title)}
                           </div>
                           <div style="font-size:12px; color:var(--text2);">
-                            <span class="tag" style="background:rgba(78,205,196,0.1); color:var(--teal); font-size:11px;">${t.category || 'Task'}</span>
+                            <span class="tag" style="background:rgba(var(--teal-rgb),0.1); color:var(--teal); font-size:11px;">${t.category || 'Task'}</span>
                             &middot; <i class="fas fa-clock"></i> ${t.scheduledTime || '16:00'} (~${t.estMin || 15}m)
                             ${steps.length ? `&middot; ${doneCount}/${steps.length} micro-steps` : ''}
                           </div>
@@ -8118,7 +8238,7 @@ function renderDailyRoutinesTab(days) {
   return `
     <div style="display:flex; flex-direction:column; gap:20px;">
       <!-- Banner -->
-      <div class="card card-glow" style="padding:20px; background:linear-gradient(135deg, var(--card) 0%, rgba(255,140,66,0.08) 100%);">
+      <div class="card card-glow" style="padding:20px; background:linear-gradient(135deg, var(--card) 0%, rgba(var(--accent-rgb),0.08) 100%);">
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
           <div>
             <h2 style="font-size:20px; font-weight:700; margin-bottom:4px;">Daily Routines & ADHD Habit Loops</h2>
@@ -8436,7 +8556,7 @@ function showTaskScheduleDetails(taskId) {
       <i class="fas fa-list-check" style="color:var(--teal);"></i> ${escHtml(task.title)}
     </h2>
     <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
-      <span class="tag" style="background:rgba(78,205,196,0.1); color:var(--teal); font-weight:700;">${task.category || 'Personal'}</span>
+      <span class="tag" style="background:rgba(var(--teal-rgb),0.1); color:var(--teal); font-weight:700;">${task.category || 'Personal'}</span>
       <span class="tag" style="background:var(--bg); border:1px solid var(--border);"><i class="fas fa-clock"></i> ~${task.estMin || 15}m</span>
       ${task.completed ? `<span class="tag" style="background:rgba(126,231,135,0.15); color:var(--green);"><i class="fas fa-check"></i> Completed</span>` : ''}
     </div>
@@ -9500,7 +9620,7 @@ function renderWellnessBodyScanSection() {
       </div>
 
       <div style="background:var(--bg); max-width:480px; margin:0 auto 24px; padding:28px; border-radius:16px; border:2px solid ${pmrIsTense ? 'var(--accent)' : 'var(--teal)'}; transition:all 0.3s ease;">
-        <div style="width:64px; height:64px; border-radius:50%; background:${pmrIsTense ? 'rgba(255,140,66,0.15)' : 'var(--teal-g)'}; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+        <div style="width:64px; height:64px; border-radius:50%; background:${pmrIsTense ? 'rgba(var(--accent-rgb),0.15)' : 'var(--teal-g)'}; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
           <i class="fas ${step.icon}" style="font-size:28px; color:${pmrIsTense ? 'var(--accent)' : 'var(--teal)'};"></i>
         </div>
         <h4 style="font-size:18px; font-weight:800; margin-bottom:8px; color:${pmrIsTense ? 'var(--accent)' : 'var(--teal)'};">
@@ -10554,7 +10674,7 @@ function renderCbtWorksheetTab() {
           </div>
 
           <!-- Actionable Micro-Step -->
-          <div style="background:rgba(78, 205, 196, 0.06); border:1px solid rgba(78, 205, 196, 0.2); border-radius:12px; padding:16px;">
+          <div style="background:rgba(var(--teal-rgb), 0.06); border:1px solid rgba(var(--teal-rgb), 0.2); border-radius:12px; padding:16px;">
             <label style="font-size:13px; font-weight:700; color:var(--teal); display:block; margin-bottom:6px;">
               <i class="fas fa-shoe-prints"></i> ${isAr ? 'خطوة عملية مجهرية لـ 5 دقائق' : 'Concrete 5-Minute Micro-Action'}
             </label>
@@ -10799,7 +10919,7 @@ function renderCbtFieldGuideTab() {
                 <strong style="color:var(--red);">${isAr ? 'كيف تبدو في ذهنك:' : 'How it sounds:'}</strong> "${trapPrompt}"
               </div>
 
-              <div style="background:rgba(78, 205, 196, 0.06); border-left:3px solid var(--teal); padding:8px 12px; border-radius:6px; font-size:12px; color:var(--text);">
+              <div style="background:rgba(var(--teal-rgb), 0.06); border-left:3px solid var(--teal); padding:8px 12px; border-radius:6px; font-size:12px; color:var(--text);">
                 <strong style="color:var(--teal);">${isAr ? 'سؤال المحقق لتفكيكها:' : 'Disarming Detective Question:'}</strong> ${counterQuestion}
               </div>
             </div>
@@ -10858,7 +10978,6 @@ function renderCbtAdhdCardsTab() {
 // ======================== ONBOARDING ========================
 function showOnboarding(){
   const isAr = currentLang() === 'ar';
-  const logoUrl = 'https://placehold.co/80x80/4ECDC4/0F0F14?text=TQ';
 
   // Ensure sticky notes are collapsed and hidden before user enters their name
   stickyNotesVisible = false;
@@ -10870,7 +10989,7 @@ function showOnboarding(){
   showModal(`
     <div style="text-align:center">
       <div style="display:flex;justify-content:center;margin-bottom:12px">
-        <img src="${logoUrl}" alt="Talib Al Qabas Logo" style="width:64px;height:64px;border-radius:14px;border:2px solid var(--teal);box-shadow:0 0 25px var(--teal-g);object-fit:cover;">
+        <div class="brand-logo-img" style="width:64px;height:64px;font-size:24px;border-radius:14px;border:2px solid var(--teal);box-shadow:0 0 25px var(--teal-g);">TQ</div>
       </div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;background:var(--card);padding:4px 10px;border-radius:20px;border:1px solid var(--border);">
         <button class="btn btn-xs ${isAr?'btn-teal':'btn-ghost'}" onclick="setLanguage('ar');showOnboarding();" style="font-size:11px;padding:3px 10px;">العربية (RTL)</button>
@@ -10910,8 +11029,8 @@ function showOnboarding(){
 
       <div style="text-align:${isAr ? 'right' : 'left'};margin-bottom:24px">
         <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">${isAr ? 'اختر لون هويتك' : 'Color'}</label>
-        <div style="display:flex;gap:8px;justify-content:center" id="onb-colors">
-          ${['#FF8C42','#4ECDC4','#FF6B6B','#58A6FF','#A855F7','#22C55E'].map(c=>`<div class="color-opt" style="background:${c}" data-c="${c}" onclick="document.querySelectorAll('#onb-colors .color-opt').forEach(o=>o.classList.remove('selected'));this.classList.add('selected')"></div>`).join('')}
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="onb-colors">
+          ${['#FF8C42','#4ECDC4','#FF6B6B','#58A6FF','#A855F7','#22C55E','#EC4899','#FBBF24'].map(c=>`<div class="color-opt" style="background:${c}" data-c="${c}" onclick="document.querySelectorAll('#onb-colors .color-opt').forEach(o=>o.classList.remove('selected'));this.classList.add('selected');applyAccentColor('${c}');"></div>`).join('')}
         </div>
       </div>
 
@@ -10922,7 +11041,8 @@ function showOnboarding(){
   `);
   setTimeout(()=>{
     const g2=document.querySelector('#onb-grades [data-g="2"]');if(g2)g2.classList.add('selected');
-    const c1=document.querySelector('#onb-colors [data-c="#4ECDC4"]') || document.querySelector('#onb-colors [data-c="#FF8C42"]');if(c1)c1.classList.add('selected');
+    const c1=document.querySelector('#onb-colors [data-c="#4ECDC4"]') || document.querySelector('#onb-colors [data-c="#FF8C42"]');
+    if(c1){ c1.classList.add('selected'); applyAccentColor(c1.dataset.c); }
   },50);
 }
 function finishOnboarding(){
@@ -11523,9 +11643,15 @@ function init(){
 
     renderStickyNotes();
   }
-  const savedThemeId = Store.get('inventory').equipped.theme;
+  const savedThemeId = (Store.get('inventory') && Store.get('inventory').equipped && Store.get('inventory').equipped.theme) || 'default';
   const savedTheme = CATALOG.themes.find(t=>t.id===savedThemeId);
-  if(savedTheme) applyTheme(savedTheme);
+  if(savedTheme) {
+    applyTheme(savedTheme);
+  } else {
+    const u = Store.get('user');
+    const inv = Store.get('inventory');
+    applyAccentColor((u && u.color) || (inv && inv.equipped && inv.equipped.color) || '#FF8C42');
+  }
 
   document.querySelectorAll('#nav a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();SFX.click();navigate(a.dataset.view);}));
   window.addEventListener('hashchange',()=>{const v=location.hash.slice(1);if(v&&VN.includes(v))navigate(v);});
