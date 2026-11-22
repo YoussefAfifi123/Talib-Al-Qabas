@@ -1275,20 +1275,20 @@ function renderDashboard(){
       ` : `
         <div style="display:flex; flex-direction:column; gap:8px;">
           ${todayEvents.map(e => `
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px;border-left:3px solid ${e.color || '#3B82F6'};">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px;border-${isArDash ? 'right' : 'left'}:3px solid ${e.color || '#3B82F6'};">
               <div style="flex:1;min-width:0;">
-                <div style="font-weight:700;font-size:14px;">${escHtml(e.title)}</div>
-                <div style="font-size:12px;color:var(--text2);"><i class="fas fa-clock"></i> ${e.startTime} - ${e.endTime} ${e.location ? `&middot; <i class="fas fa-location-dot"></i> ${escHtml(e.location)}` : ''}</div>
+                <div style="font-weight:700;font-size:14px;">${escHtml(typeof localizeScheduleText === 'function' ? localizeScheduleText(e.title, isArDash) : e.title)}</div>
+                <div style="font-size:12px;color:var(--text2);"><i class="fas fa-clock"></i> ${e.startTime} - ${e.endTime} ${e.location ? `&middot; <i class="fas fa-location-dot"></i> ${escHtml(typeof localizeScheduleText === 'function' ? localizeScheduleText(e.location, isArDash) : e.location)}` : ''}</div>
               </div>
-              <span class="tag" style="background:${e.color || '#3B82F6'}22; color:${e.color || '#3B82F6'}; font-size:11px;">${e.category || 'Class'}</span>
+              <span class="tag" style="background:${e.color || '#3B82F6'}22; color:${e.color || '#3B82F6'}; font-size:11px;">${escHtml(typeof localizeScheduleText === 'function' ? localizeScheduleText(e.category || 'Class', isArDash) : (e.category || 'Class'))}</span>
             </div>
           `).join('')}
 
           ${todayScheduledTasks.slice(0, 2).map(t => `
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px;border-left:3px solid var(--teal);">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--bg);border-radius:10px;border-${isArDash ? 'right' : 'left'}:3px solid var(--teal);">
               <div style="flex:1;min-width:0;">
-                <div style="font-weight:700;font-size:14px;"><i class="fas fa-list-check" style="color:var(--teal); margin-right:6px;"></i> ${escHtml(t.title)}</div>
-                <div style="font-size:12px;color:var(--text2);"><i class="fas fa-clock"></i> ${t.scheduledTime || '16:00'} (~${t.estMin || 15}m)</div>
+                <div style="font-weight:700;font-size:14px;"><i class="fas fa-list-check" style="color:var(--teal); margin-${isArDash ? 'left' : 'right'}:6px;"></i> ${escHtml(t.title)}</div>
+                <div style="font-size:12px;color:var(--text2);"><i class="fas fa-clock"></i> ${t.scheduledTime || '16:00'} (~${t.estMin || 15}${isArDash ? ' د' : 'm'})</div>
               </div>
               <button class="btn btn-sm btn-teal" onclick="launchFocusForTask('${t.id}')"><i class="fas fa-play"></i> ${isArDash ? 'تركيز' : 'Focus'}</button>
             </div>
@@ -7602,6 +7602,83 @@ let scheduleWeekOffset = 0;
 let scheduleViewMode = (typeof window !== 'undefined' && window.innerWidth <= 640) ? 'agenda' : 'timetable'; // 'timetable', 'agenda', 'routine'
 let scheduleFilter = 'all'; // 'all', 'classes', 'tasks', 'routine'
 
+const SCHEDULE_AR_MAP = {
+  // Categories & Slots
+  'Class': 'حصة دراسية',
+  'Study': 'مذاكرة',
+  'Activity': 'نشاط',
+  'Exam': 'اختبار',
+  'Personal': 'شخصي',
+  'Homework': 'واجب مدرسي',
+  'Reading': 'قراءة',
+  'Exam Prep': 'استعداد للامتحان',
+  'Project': 'مشروع',
+  'Task': 'مهمة',
+  'Routine': 'روتين',
+  'morning': 'الصباح',
+  'afternoon': 'بعد الظهر',
+  'evening': 'المساء',
+
+  // Seeded & Preset Event Titles
+  'Mathematics (Algebra & Sets)': 'الرياضيات (الجبر والمجموعات)',
+  'English Language & Reading': 'اللغة الإنجليزية والقراءة',
+  'Science & Physics Lab': 'العلوم ومعمل الفيزياء',
+  'Social Studies & History': 'الدراسات الاجتماعية والتاريخ',
+  'Daily Deep Focus & Study Sprint': 'جلسة التركيز العميق والمذاكرة اليومية',
+  'Sports & PE Activity': 'النشاط الرياضي والتربية البدنية',
+  'Subject 1 Practice Exam': 'اختبار تدريبي — المادة الأولى',
+  'Flashcards & Memory Review': 'مراجعة البطاقات وتنشيط الذاكرة',
+  'Problem Sets & Formula Practice': 'حل المسائل والتدريب على القوانين',
+  'Sprint 1: Most Urgent Homework': 'الجولة 1: الواجب الأكثر أهمية',
+  'Sensory Walk & Snack': 'جولة حركة خفيفة ووجبة صحية',
+  'Sprint 2: Reading or Project': 'الجولة 2: القراءة أو المشروع',
+  'Mathematics': 'الرياضيات',
+  'English Literature': 'الأدب واللغة الإنجليزية',
+  'Science & Chemistry Lab': 'العلوم ومعمل الكيمياء',
+  'History & Social Studies': 'التاريخ والدراسات الاجتماعية',
+  'Daily Deep Focus & Homework Hour': 'ساعة التركيز العميق والواجبات اليومية',
+
+  // Seeded Locations
+  'Room 204': 'قاعة 204',
+  'Room 102': 'قاعة 102',
+  'Room 210': 'قاعة 210',
+  'Science Lab B': 'معمل العلوم ب',
+  'Lab B': 'معمل ب',
+  'Hall 3': 'قاعة 3',
+  'Study Desk': 'مكتب المذاكرة',
+  'Home Study Desk': 'مكتب المذاكرة المنزلي',
+  'Sports Field': 'الملعب الرياضي',
+  'Quiet Room': 'غرفة هادئة',
+  'Talib Al Qabas Desk': 'مكتب طالب القبس',
+  'Desk': 'المكتب',
+  'Study Space': 'مساحة المذاكرة',
+  'Home': 'المنزل',
+
+  // Seeded Routine Titles & Steps
+  'Morning Focus Kickoff': 'انطلاقة التركيز الصباحية',
+  'Afternoon Brain Reset': 'تجديد النشاط بعد الظهر',
+  'Evening Wind Down & Prep': 'الاسترخاء المسائي والتحضير للغد',
+  'Drink a full glass of water': 'شرب كوب كامل من الماء',
+  'Check backpack & materials for today': 'تجهيز الحقيبة والأدوات الدراسية لليوم',
+  'Review today’s timetable on Talib Al Qabas': 'مراجعة جدول اليوم على منصة طالب القبس',
+  '10-minute stretch & healthy snack': 'تمدد لمدة 10 دقائق ووجبة خفيفة صحية',
+  'Check off school classes completed': 'تحديد الحصص الدراسية المنجزة',
+  'Launch 25-minute Pomodoro focus block': 'بدء جلسة تركيز بومودورو لمدة 25 دقيقة',
+  'Review 10 flashcards on Talib Al Qabas': 'مراجعة 10 بطاقات تعليمية على طالب القبس',
+  'Check tomorrow’s schedule & prep clothes': 'مراجعة جدول الغد وتجهيز المستلزمات',
+  'Disconnect screens 30m before sleep': 'الابتعاد عن الشاشات قبل النوم بـ 30 دقيقة'
+};
+
+function localizeScheduleText(text, isAr = currentLang() === 'ar') {
+  if (!isAr || !text) return text;
+  if (SCHEDULE_AR_MAP[text] !== undefined) return SCHEDULE_AR_MAP[text];
+  if (typeof translateString === 'function') {
+    const translated = translateString(text);
+    if (translated !== text) return translated;
+  }
+  return text;
+}
+
 function getScheduleSettings() {
   const s = Store.get('settings') || {};
   if (!s.schedule) {
@@ -7626,17 +7703,26 @@ function saveScheduleSettings(weekStartDay, dayStartHour, dayEndHour) {
   Store.save();
   SFX.bonus();
 
-  const dayNames = { 6: 'Saturday', 0: 'Sunday', 1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday' };
-  const dName = dayNames[startDay] || 'Custom';
-  toast(`Timetable updated! Starts on ${dName}, ${formatHour12(startH)} to ${formatHour12(endH)}`, 'success');
+  const isAr = currentLang() === 'ar';
+  const dayNames = isAr
+    ? { 6: 'السبت', 0: 'الأحد', 1: 'الإثنين', 2: 'الثلاثاء', 3: 'الأربعاء', 4: 'الخميس', 5: 'الجمعة' }
+    : { 6: 'Saturday', 0: 'Sunday', 1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday' };
+  const dName = dayNames[startDay] || (isAr ? 'مخصص' : 'Custom');
+  toast(
+    isAr
+      ? `تم تحديث الجدول! يبدأ يوم ${dName}، من ${formatHour12(startH, true)} إلى ${formatHour12(endH, true)}`
+      : `Timetable updated! Starts on ${dName}, ${formatHour12(startH, false)} to ${formatHour12(endH, false)}`,
+    'success'
+  );
 
   if (currentView === 'schedule') renderSchedule();
   else if (currentView === 'settings') renderSettings();
 }
 
-function formatHour12(h) {
+function formatHour12(h, isAr = currentLang() === 'ar') {
   const hourNum = parseInt(h, 10);
-  return (hourNum % 12 || 12) + (hourNum >= 12 ? ' PM' : ' AM');
+  const suffix = isAr ? (hourNum >= 12 ? ' م' : ' ص') : (hourNum >= 12 ? ' PM' : ' AM');
+  return (hourNum % 12 || 12) + suffix;
 }
 
 function getScheduleHours() {
@@ -7651,29 +7737,41 @@ function getScheduleHours() {
 }
 
 function getTimeSlotOptions(selectedTime, startH = null, endH = null) {
+  const isAr = currentLang() === 'ar';
   const sched = getScheduleSettings();
   const from = startH !== null ? startH : Math.min(4, sched.dayStartHour);
   const to = endH !== null ? endH : Math.max(23, sched.dayEndHour);
   const opts = [];
   for (let h = from; h <= to; h++) {
     const val = String(h).padStart(2, '0') + ':00';
-    const h12 = (h % 12 || 12) + (h >= 12 ? ' PM' : ' AM');
+    const h12 = formatHour12(h, isAr);
     opts.push(`<option value="${val}" ${val === selectedTime ? 'selected' : ''}>${val} (${h12})</option>`);
   }
   return opts.join('');
 }
 
 function getOrderedWeekDaysList() {
+  const isAr = currentLang() === 'ar';
   const sched = getScheduleSettings();
-  const allDays = [
-    { d: 0, n: 'Sun', full: 'Sunday' },
-    { d: 1, n: 'Mon', full: 'Monday' },
-    { d: 2, n: 'Tue', full: 'Tuesday' },
-    { d: 3, n: 'Wed', full: 'Wednesday' },
-    { d: 4, n: 'Thu', full: 'Thursday' },
-    { d: 5, n: 'Fri', full: 'Friday' },
-    { d: 6, n: 'Sat', full: 'Saturday' }
-  ];
+  const allDays = isAr
+    ? [
+        { d: 0, n: 'الأحد', full: 'الأحد' },
+        { d: 1, n: 'الإثنين', full: 'الإثنين' },
+        { d: 2, n: 'الثلاثاء', full: 'الثلاثاء' },
+        { d: 3, n: 'الأربعاء', full: 'الأربعاء' },
+        { d: 4, n: 'الخميس', full: 'الخميس' },
+        { d: 5, n: 'الجمعة', full: 'الجمعة' },
+        { d: 6, n: 'السبت', full: 'السبت' }
+      ]
+    : [
+        { d: 0, n: 'Sun', full: 'Sunday' },
+        { d: 1, n: 'Mon', full: 'Monday' },
+        { d: 2, n: 'Tue', full: 'Tuesday' },
+        { d: 3, n: 'Wed', full: 'Wednesday' },
+        { d: 4, n: 'Thu', full: 'Thursday' },
+        { d: 5, n: 'Fri', full: 'Friday' },
+        { d: 6, n: 'Sat', full: 'Saturday' }
+      ];
   const startDay = sched.weekStartDay;
   const ordered = [];
   for (let i = 0; i < 7; i++) {
@@ -7684,21 +7782,36 @@ function getOrderedWeekDaysList() {
 }
 
 function showScheduleSettingsModal() {
+  const isAr = currentLang() === 'ar';
   const sched = getScheduleSettings();
 
-  const startDayOptions = [
-    { val: 6, label: 'Saturday', note: 'Egypt & Middle East' },
-    { val: 0, label: 'Sunday', note: 'North America / Japan' },
-    { val: 1, label: 'Monday', note: 'International ISO / Europe' }
-  ];
+  const startDayOptions = isAr
+    ? [
+        { val: 6, label: 'السبت', note: 'مصر والشرق الأوسط' },
+        { val: 0, label: 'الأحد', note: 'أمريكا الشمالية / اليابان' },
+        { val: 1, label: 'الإثنين', note: 'النظام الدولي / أوروبا' }
+      ]
+    : [
+        { val: 6, label: 'Saturday', note: 'Egypt & Middle East' },
+        { val: 0, label: 'Sunday', note: 'North America / Japan' },
+        { val: 1, label: 'Monday', note: 'International ISO / Europe' }
+      ];
 
-  const presets = [
-    { name: 'Early Bird (5 AM – 8 PM)', start: 5, end: 20 },
-    { name: 'Dawn Scholar (6 AM – 9 PM)', start: 6, end: 21 },
-    { name: 'Standard School (8 AM – 8 PM)', start: 8, end: 20 },
-    { name: 'Night Owl (10 AM – 11 PM)', start: 10, end: 23 },
-    { name: 'Full Day (5 AM – 11 PM)', start: 5, end: 23 }
-  ];
+  const presets = isAr
+    ? [
+        { name: 'مبكّر (5 ص – 8 م)', start: 5, end: 20 },
+        { name: 'طالب الفجر (6 ص – 9 م)', start: 6, end: 21 },
+        { name: 'اليوم الدراسي (8 ص – 8 م)', start: 8, end: 20 },
+        { name: 'دراسة مسائية (10 ص – 11 م)', start: 10, end: 23 },
+        { name: 'اليوم الكامل (5 ص – 11 م)', start: 5, end: 23 }
+      ]
+    : [
+        { name: 'Early Bird (5 AM – 8 PM)', start: 5, end: 20 },
+        { name: 'Dawn Scholar (6 AM – 9 PM)', start: 6, end: 21 },
+        { name: 'Standard School (8 AM – 8 PM)', start: 8, end: 20 },
+        { name: 'Night Owl (10 AM – 11 PM)', start: 10, end: 23 },
+        { name: 'Full Day (5 AM – 11 PM)', start: 5, end: 23 }
+      ];
 
   showModal(`
     <div style="max-width:540px;">
@@ -7707,14 +7820,14 @@ function showScheduleSettingsModal() {
           <i class="fas fa-sliders" style="font-size:16px;"></i>
         </div>
         <div>
-          <h2 style="font-size:20px; font-weight:700; margin:0;">Timetable & Week Settings</h2>
-          <p style="font-size:12px; color:var(--text2); margin:0;">Customize week start day and daily active hours</p>
+          <h2 style="font-size:20px; font-weight:700; margin:0;">${isAr ? 'إعدادات الجدول والأسبوع' : 'Timetable & Week Settings'}</h2>
+          <p style="font-size:12px; color:var(--text2); margin:0;">${isAr ? 'خصّص يوم بداية الأسبوع وساعات النشاط اليومية' : 'Customize week start day and daily active hours'}</p>
         </div>
       </div>
 
       <!-- Week Start Day -->
       <div style="margin-bottom:18px;">
-        <label style="font-size:13px; font-weight:700; display:block; margin-bottom:6px;">Week Starts On</label>
+        <label style="font-size:13px; font-weight:700; display:block; margin-bottom:6px;">${isAr ? 'بداية الأسبوع' : 'Week Starts On'}</label>
         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="sched-start-day-picker">
           ${startDayOptions.map(opt => `
             <button type="button" class="btn ${sched.weekStartDay === opt.val ? 'btn-teal' : 'btn-secondary'} sched-day-opt" 
@@ -7731,7 +7844,7 @@ function showScheduleSettingsModal() {
 
       <!-- Quick Preset Buttons -->
       <div style="margin-bottom:18px;">
-        <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:6px;">Quick Hour Presets</label>
+        <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:6px;">${isAr ? 'قوالب ساعات سريعة' : 'Quick Hour Presets'}</label>
         <div style="display:flex; gap:6px; flex-wrap:wrap;">
           ${presets.map(p => `
             <button type="button" class="btn btn-ghost btn-sm" 
@@ -7746,34 +7859,36 @@ function showScheduleSettingsModal() {
       <!-- Daily Hour Range -->
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;">
         <div>
-          <label style="font-size:13px; font-weight:700; display:block; margin-bottom:4px;">Day Starts At (First Hour)</label>
+          <label style="font-size:13px; font-weight:700; display:block; margin-bottom:4px;">${isAr ? 'يبدأ اليوم في (أول ساعة)' : 'Day Starts At (First Hour)'}</label>
           <select class="input" id="modal-day-start-hour" onchange="updateModalHourPreview()">
             ${[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(h => `
-              <option value="${h}" ${h === sched.dayStartHour ? 'selected' : ''}>${String(h).padStart(2, '0')}:00 (${formatHour12(h)})</option>
+              <option value="${h}" ${h === sched.dayStartHour ? 'selected' : ''}>${String(h).padStart(2, '0')}:00 (${formatHour12(h, isAr)})</option>
             `).join('')}
           </select>
-          <div style="font-size:11px; color:var(--text2); margin-top:3px;">e.g. 5:00 AM for early morning sessions</div>
+          <div style="font-size:11px; color:var(--text2); margin-top:3px;">${isAr ? 'مثال: 5:00 ص لجلسات الصباح الباكر' : 'e.g. 5:00 AM for early morning sessions'}</div>
         </div>
         <div>
-          <label style="font-size:13px; font-weight:700; display:block; margin-bottom:4px;">Day Ends At (Last Hour)</label>
+          <label style="font-size:13px; font-weight:700; display:block; margin-bottom:4px;">${isAr ? 'ينتهي اليوم في (آخر ساعة)' : 'Day Ends At (Last Hour)'}</label>
           <select class="input" id="modal-day-end-hour" onchange="updateModalHourPreview()">
             ${[17, 18, 19, 20, 21, 22, 23].map(h => `
-              <option value="${h}" ${h === sched.dayEndHour ? 'selected' : ''}>${String(h).padStart(2, '0')}:00 (${formatHour12(h)})</option>
+              <option value="${h}" ${h === sched.dayEndHour ? 'selected' : ''}>${String(h).padStart(2, '0')}:00 (${formatHour12(h, isAr)})</option>
             `).join('')}
           </select>
-          <div style="font-size:11px; color:var(--text2); margin-top:3px;">e.g. 8:00 PM (20:00) or 11:00 PM (23:00)</div>
+          <div style="font-size:11px; color:var(--text2); margin-top:3px;">${isAr ? 'مثال: 8:00 م (20:00) أو 11:00 م (23:00)' : 'e.g. 8:00 PM (20:00) or 11:00 PM (23:00)'}</div>
         </div>
       </div>
 
       <!-- Live summary pill -->
       <div id="modal-sched-preview" style="background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 14px; margin-bottom:18px; font-size:12px; color:var(--text2); display:flex; align-items:center; gap:8px;">
         <i class="fas fa-check-circle" style="color:var(--teal);"></i>
-        <span>Will display hours <strong>${formatHour12(sched.dayStartHour)} to ${formatHour12(sched.dayEndHour)}</strong> (${Math.max(1, sched.dayEndHour - sched.dayStartHour + 1)} time slots/day)</span>
+        <span>${isAr
+          ? `سيتم عرض الساعات من <strong>${formatHour12(sched.dayStartHour, true)} إلى ${formatHour12(sched.dayEndHour, true)}</strong> (${Math.max(1, sched.dayEndHour - sched.dayStartHour + 1)} فترات/يوم)`
+          : `Will display hours <strong>${formatHour12(sched.dayStartHour, false)} to ${formatHour12(sched.dayEndHour, false)}</strong> (${Math.max(1, sched.dayEndHour - sched.dayStartHour + 1)} time slots/day)`}</span>
       </div>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-teal" onclick="applyModalScheduleSettings()"><i class="fas fa-check"></i> Apply to Timetable</button>
+        <button class="btn btn-secondary" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+        <button class="btn btn-teal" onclick="applyModalScheduleSettings()"><i class="fas fa-check"></i> ${isAr ? 'تطبيق على الجدول' : 'Apply to Timetable'}</button>
       </div>
     </div>
   `);
@@ -7802,6 +7917,7 @@ function setModalHours(start, end) {
 }
 
 function updateModalHourPreview() {
+  const isAr = currentLang() === 'ar';
   const sEl = document.getElementById('modal-day-start-hour');
   const eEl = document.getElementById('modal-day-end-hour');
   const pEl = document.getElementById('modal-sched-preview');
@@ -7816,7 +7932,9 @@ function updateModalHourPreview() {
   const total = e - s + 1;
   pEl.innerHTML = `
     <i class="fas fa-check-circle" style="color:var(--teal);"></i>
-    <span>Will display hours <strong>${formatHour12(s)} to ${formatHour12(e)}</strong> (${total} time slots/day)</span>
+    <span>${isAr
+      ? `سيتم عرض الساعات من <strong>${formatHour12(s, true)} إلى ${formatHour12(e, true)}</strong> (${total} فترات/يوم)`
+      : `Will display hours <strong>${formatHour12(s, false)} to ${formatHour12(e, false)}</strong> (${total} time slots/day)`}</span>
   `;
 }
 
@@ -7834,6 +7952,7 @@ function applyModalScheduleSettings() {
 }
 
 function getWeekDays(offset = 0) {
+  const isAr = currentLang() === 'ar';
   const sched = getScheduleSettings();
   const startDay = sched.weekStartDay; // 6: Sat, 0: Sun, 1: Mon
   const now = new Date();
@@ -7843,8 +7962,12 @@ function getWeekDays(offset = 0) {
   const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - distToStart + (offset * 7));
 
   const days = [];
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const fullNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayNames = isAr
+    ? ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
+    : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const fullNames = isAr
+    ? ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
+    : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   for (let i = 0; i < 7; i++) {
     const d = new Date(startOfWeek.getFullYear(), startOfWeek.getMonth(), startOfWeek.getDate() + i);
@@ -7857,7 +7980,7 @@ function getWeekDays(offset = 0) {
       date: d,
       dateStr: dateStr,
       dayNum: d.getDate(),
-      monthName: d.toLocaleDateString('en-US', { month: 'short' }),
+      monthName: d.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { month: 'short' }),
       isToday: dateStr === todayStr
     });
   }
@@ -7869,20 +7992,21 @@ function renderSchedule() {
   const el = document.getElementById('view-schedule');
   if (!el) return;
 
+  const isAr = currentLang() === 'ar';
   const days = getWeekDays(scheduleWeekOffset);
-  const weekStart = `${days[0].monthName} ${days[0].dayNum}`;
-  const weekEnd = `${days[6].monthName} ${days[6].dayNum}, ${days[6].date.getFullYear()}`;
+  const weekStart = isAr ? `${days[0].dayNum} ${days[0].monthName}` : `${days[0].monthName} ${days[0].dayNum}`;
+  const weekEnd = isAr ? `${days[6].dayNum} ${days[6].monthName} ${days[6].date.getFullYear()}` : `${days[6].monthName} ${days[6].dayNum}, ${days[6].date.getFullYear()}`;
   const isCurrentWeek = scheduleWeekOffset === 0;
 
   const schedSettings = getScheduleSettings();
-  const dayNameMap = { 6: 'Saturday', 0: 'Sunday', 1: 'Monday' };
-  const weekStartName = dayNameMap[schedSettings.weekStartDay] || 'Custom';
+  const dayNameMap = isAr
+    ? { 6: 'السبت', 0: 'الأحد', 1: 'الإثنين' }
+    : { 6: 'Saturday', 0: 'Sunday', 1: 'Monday' };
+  const weekStartName = dayNameMap[schedSettings.weekStartDay] || (isAr ? 'مخصص' : 'Custom');
 
   const tasks = Store.get('tasks') || [];
   const pendingTasks = tasks.filter(t => !t.completed);
   const unscheduledTasks = pendingTasks.filter(t => !t.scheduledDate);
-  const events = Store.get('scheduleEvents') || [];
-  const routines = Store.get('routines') || [];
 
   el.innerHTML = `
     <div style="max-width:1100px; margin:0 auto;">
@@ -7890,21 +8014,21 @@ function renderSchedule() {
       <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
         <div>
           <h1 style="font-size:26px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-calendar-days" style="color:var(--teal);"></i> Schedule & Timetable
+            <i class="fas fa-calendar-days" style="color:var(--teal);"></i> ${isAr ? 'الجدول والمواعيد' : 'Schedule & Timetable'}
           </h1>
-          <p style="color:var(--text2); font-size:15px;">Week-by-week timetable, daily routines, and automatically synced tasks.</p>
+          <p style="color:var(--text2); font-size:15px;">${isAr ? 'جدول الحصص الأسبوعي، والروتين اليومي، والمهام المزامنة تلقائيًا.' : 'Week-by-week timetable, daily routines, and automatically synced tasks.'}</p>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn btn-secondary btn-sm" onclick="showScheduleSettingsModal()" title="Customize week start day and hours" style="border:1px solid var(--border);">
-            <i class="fas fa-sliders"></i> Timetable Settings
+          <button class="btn btn-secondary btn-sm" onclick="showScheduleSettingsModal()" title="${isAr ? 'تخصيص بداية الأسبوع والساعات' : 'Customize week start day and hours'}" style="border:1px solid var(--border);">
+            <i class="fas fa-sliders"></i> ${isAr ? 'إعدادات الجدول' : 'Timetable Settings'}
           </button>
-          <button class="btn btn-teal btn-sm" onclick="autoSyncTasksToSchedule()" title="Automatically distribute pending tasks into open study slots this week">
-            <i class="fas fa-bolt"></i> Auto-Sync Tasks ${unscheduledTasks.length ? `(${unscheduledTasks.length})` : ''}
+          <button class="btn btn-teal btn-sm" onclick="autoSyncTasksToSchedule()" title="${isAr ? 'توزيع المهام المعلقة تلقائيًا على أوقات المذاكرة المتاحة هذا الأسبوع' : 'Automatically distribute pending tasks into open study slots this week'}">
+            <i class="fas fa-bolt"></i> ${isAr ? 'مزامنة المهام تلقائيًا' : 'Auto-Sync Tasks'} ${unscheduledTasks.length ? `(${unscheduledTasks.length})` : ''}
           </button>
-          <button class="btn btn-primary btn-sm" onclick="showAddScheduleEventModal()"><i class="fas fa-plus"></i> Add Event / Class</button>
-          <button class="btn btn-secondary btn-sm" onclick="showAddTaskModal()"><i class="fas fa-list-check"></i> New Task</button>
-          <button class="btn btn-ghost btn-sm" onclick="printSchedule()" title="Print or export timetable summary" style="border:1px solid var(--border);">
-            <i class="fas fa-print"></i> Export
+          <button class="btn btn-primary btn-sm" onclick="showAddScheduleEventModal()"><i class="fas fa-plus"></i> ${isAr ? 'إضافة حصة / موعد' : 'Add Event / Class'}</button>
+          <button class="btn btn-secondary btn-sm" onclick="showAddTaskModal()"><i class="fas fa-list-check"></i> ${isAr ? 'مهمة جديدة' : 'New Task'}</button>
+          <button class="btn btn-ghost btn-sm" onclick="printSchedule()" title="${isAr ? 'طباعة أو تصدير ملخص الجدول' : 'Print or export timetable summary'}" style="border:1px solid var(--border);">
+            <i class="fas fa-print"></i> ${isAr ? 'تصدير / طباعة' : 'Export'}
           </button>
         </div>
       </div>
@@ -7912,26 +8036,26 @@ function renderSchedule() {
       <!-- Week Navigator Bar -->
       <div class="card" style="margin-bottom:20px; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
         <div style="display:flex; align-items:center; gap:10px;">
-          <button class="btn btn-sm btn-secondary" onclick="scheduleWeekOffset--; SFX.click(); renderSchedule();" title="Previous Week">
-            <i class="fas fa-chevron-left"></i> Prev Week
+          <button class="btn btn-sm btn-secondary" onclick="scheduleWeekOffset--; SFX.click(); renderSchedule();" title="${isAr ? 'الأسبوع السابق' : 'Previous Week'}">
+            <i class="fas ${isAr ? 'fa-chevron-right' : 'fa-chevron-left'}"></i> ${isAr ? 'الأسبوع السابق' : 'Prev Week'}
           </button>
           <button class="btn btn-sm ${isCurrentWeek ? 'btn-teal' : 'btn-secondary'}" onclick="scheduleWeekOffset=0; SFX.click(); renderSchedule();">
-            <i class="fas fa-calendar-check"></i> ${isCurrentWeek ? 'Current Week' : 'Jump to Today'}
+            <i class="fas fa-calendar-check"></i> ${isCurrentWeek ? (isAr ? 'الأسبوع الحالي' : 'Current Week') : (isAr ? 'العودة لليوم' : 'Jump to Today')}
           </button>
-          <button class="btn btn-sm btn-secondary" onclick="scheduleWeekOffset++; SFX.click(); renderSchedule();" title="Next Week">
-            Next Week <i class="fas fa-chevron-right"></i>
+          <button class="btn btn-sm btn-secondary" onclick="scheduleWeekOffset++; SFX.click(); renderSchedule();" title="${isAr ? 'الأسبوع التالي' : 'Next Week'}">
+            ${isAr ? 'الأسبوع التالي' : 'Next Week'} <i class="fas ${isAr ? 'fa-chevron-left' : 'fa-chevron-right'}"></i>
           </button>
         </div>
 
         <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-          <div style="font-family:'Fredoka',sans-serif; font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px;">
+          <div style="font-family:${isAr ? "'Cairo',sans-serif" : "'Fredoka',sans-serif"}; font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px;">
             <i class="far fa-calendar-alt" style="color:var(--accent);"></i>
             <span>${weekStart} – ${weekEnd}</span>
-            ${isCurrentWeek ? `<span class="tag" style="background:rgba(var(--teal-rgb),0.15); color:var(--teal); font-size:12px; font-family:'Nunito';">This Week</span>` : ''}
+            ${isCurrentWeek ? `<span class="tag" style="background:rgba(var(--teal-rgb),0.15); color:var(--teal); font-size:12px;">${isAr ? 'هذا الأسبوع' : 'This Week'}</span>` : ''}
           </div>
           <div style="display:flex; align-items:center; gap:6px;">
-            <span class="tag" style="background:var(--bg); border:1px solid var(--border); font-size:11px; cursor:pointer; font-family:'Nunito'; font-weight:600;" onclick="showScheduleSettingsModal()" title="Click to customize schedule hours and start day">
-              <i class="fas fa-clock" style="color:var(--teal); margin-right:4px;"></i>${formatHour12(schedSettings.dayStartHour)} – ${formatHour12(schedSettings.dayEndHour)} &middot; Starts ${weekStartName} <i class="fas fa-pen" style="font-size:9px; margin-left:3px; opacity:0.6;"></i>
+            <span class="tag" style="background:var(--bg); border:1px solid var(--border); font-size:11px; cursor:pointer; font-weight:600;" onclick="showScheduleSettingsModal()" title="${isAr ? 'انقر لتخصيص ساعات الجدول ويوم البداية' : 'Click to customize schedule hours and start day'}">
+              <i class="fas fa-clock" style="color:var(--teal); margin-${isAr ? 'left' : 'right'}:4px;"></i>${formatHour12(schedSettings.dayStartHour, isAr)} – ${formatHour12(schedSettings.dayEndHour, isAr)} &middot; ${isAr ? `يبدأ ${weekStartName}` : `Starts ${weekStartName}`} <i class="fas fa-pen" style="font-size:9px; margin-${isAr ? 'right' : 'left'}:3px; opacity:0.6;"></i>
             </span>
           </div>
         </div>
@@ -7939,13 +8063,13 @@ function renderSchedule() {
         <!-- View Switcher -->
         <div style="display:flex; gap:6px; background:var(--bg); padding:4px; border-radius:10px; border:1px solid var(--border);">
           <button class="schedule-nav-pill ${scheduleViewMode === 'timetable' ? 'active' : ''}" style="padding:5px 12px; font-size:12px;" onclick="scheduleViewMode='timetable'; SFX.click(); renderSchedule();">
-            <i class="fas fa-table-cells"></i> Timetable
+            <i class="fas fa-table-cells"></i> ${isAr ? 'الجدول الأسبوعي' : 'Timetable'}
           </button>
           <button class="schedule-nav-pill ${scheduleViewMode === 'agenda' ? 'active' : ''}" style="padding:5px 12px; font-size:12px;" onclick="scheduleViewMode='agenda'; SFX.click(); renderSchedule();">
-            <i class="fas fa-bars-staggered"></i> Day Agenda
+            <i class="fas fa-bars-staggered"></i> ${isAr ? 'قائمة اليوم' : 'Day Agenda'}
           </button>
           <button class="schedule-nav-pill ${scheduleViewMode === 'routine' ? 'active' : ''}" style="padding:5px 12px; font-size:12px;" onclick="scheduleViewMode='routine'; SFX.click(); renderSchedule();">
-            <i class="fas fa-repeat"></i> Daily Routines
+            <i class="fas fa-repeat"></i> ${isAr ? 'الروتين اليومي' : 'Daily Routines'}
           </button>
         </div>
       </div>
@@ -7954,10 +8078,10 @@ function renderSchedule() {
       <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
         <div style="display:flex; gap:8px; overflow-x:auto;" class="no-scrollbar">
           ${[
-            { id: 'all', label: 'All Items', icon: 'fa-layer-group' },
-            { id: 'classes', label: 'Classes & Timetable', icon: 'fa-graduation-cap' },
-            { id: 'tasks', label: 'Synced Tasks', icon: 'fa-list-check' },
-            { id: 'routine', label: 'Daily Routines', icon: 'fa-clock-rotate-left' }
+            { id: 'all', label: isAr ? 'الكل' : 'All Items', icon: 'fa-layer-group' },
+            { id: 'classes', label: isAr ? 'الحصص والجدول' : 'Classes & Timetable', icon: 'fa-graduation-cap' },
+            { id: 'tasks', label: isAr ? 'المهام المزامنة' : 'Synced Tasks', icon: 'fa-list-check' },
+            { id: 'routine', label: isAr ? 'الروتين اليومي' : 'Daily Routines', icon: 'fa-clock-rotate-left' }
           ].map(f => `
             <button class="grade-pill ${scheduleFilter === f.id ? 'selected' : ''}" style="font-size:12px; padding:6px 14px;" onclick="scheduleFilter='${f.id}'; SFX.click(); renderSchedule();">
               <i class="fas ${f.icon}"></i> ${f.label}
@@ -7967,7 +8091,7 @@ function renderSchedule() {
 
         <div style="display:flex; gap:8px; align-items:center;">
           <button class="btn btn-sm btn-ghost" onclick="showRoutineTemplateModal()" style="font-size:12px; border:1px solid var(--border);">
-            <i class="fas fa-wand-magic-sparkles"></i> Timetable Presets
+            <i class="fas fa-wand-magic-sparkles"></i> ${isAr ? 'قوالب جدول جاهزة' : 'Timetable Presets'}
           </button>
         </div>
       </div>
@@ -7979,12 +8103,12 @@ function renderSchedule() {
               <i class="fas fa-sparkles"></i>
             </div>
             <div>
-              <div style="font-weight:700; font-size:14px;">You have ${unscheduledTasks.length} pending unscheduled task${unscheduledTasks.length > 1 ? 's' : ''}</div>
-              <div style="font-size:12px; color:var(--text2);">Automatically schedule them into optimal study blocks across your week with 1 click.</div>
+              <div style="font-weight:700; font-size:14px;">${isAr ? `لديك ${unscheduledTasks.length} ${unscheduledTasks.length === 1 ? 'مهمة معلقة غير مجدولة' : 'مهام معلقة غير مجدولة'}` : `You have ${unscheduledTasks.length} pending unscheduled task${unscheduledTasks.length > 1 ? 's' : ''}`}</div>
+              <div style="font-size:12px; color:var(--text2);">${isAr ? 'وزّعها تلقائيًا على فترات المذاكرة المناسبة في أسبوعك بضغطة واحدة.' : 'Automatically schedule them into optimal study blocks across your week with 1 click.'}</div>
             </div>
           </div>
           <button class="btn btn-sm btn-teal" onclick="autoSyncTasksToSchedule()">
-            <i class="fas fa-bolt"></i> Auto-Sync All to Schedule
+            <i class="fas fa-bolt"></i> ${isAr ? 'مزامنة الكل في الجدول' : 'Auto-Sync All to Schedule'}
           </button>
         </div>
       ` : ''}
@@ -8002,6 +8126,7 @@ function renderSchedule() {
 
 // ---------------- Timetable Grid View ----------------
 function renderWeeklyTimetableGrid(days) {
+  const isAr = currentLang() === 'ar';
   const hours = getScheduleHours();
   const events = Store.get('scheduleEvents') || [];
   const tasks = Store.get('tasks') || [];
@@ -8012,24 +8137,24 @@ function renderWeeklyTimetableGrid(days) {
       <div class="timetable-grid">
         <!-- Top Left Corner -->
         <div class="timetable-header-cell" style="color:var(--text2); font-size:12px; display:flex; align-items:center; justify-content:center;">
-          Time
+          ${isAr ? 'الوقت' : 'Time'}
         </div>
 
         <!-- Day Headers -->
         ${days.map(d => `
           <div class="timetable-header-cell ${d.isToday ? 'today-col' : ''}">
             <div style="font-size:13px; font-weight:700; color:${d.isToday ? 'var(--teal)' : 'var(--text)'};">${d.name}</div>
-            <div style="font-size:16px; font-weight:800; font-family:'Fredoka'; margin-top:2px; color:${d.isToday ? 'var(--teal)' : 'var(--text)'};">
+            <div style="font-size:16px; font-weight:800; font-family:${isAr ? "'Cairo',sans-serif" : "'Fredoka',sans-serif"}; margin-top:2px; color:${d.isToday ? 'var(--teal)' : 'var(--text)'};">
               ${d.dayNum} ${d.monthName}
             </div>
-            ${d.isToday ? `<span class="tag" style="background:var(--teal); color:#0F0F14; font-size:10px; padding:2px 8px; margin-top:4px;">TODAY</span>` : ''}
+            ${d.isToday ? `<span class="tag" style="background:var(--teal); color:#0F0F14; font-size:10px; padding:2px 8px; margin-top:4px;">${isAr ? 'اليوم' : 'TODAY'}</span>` : ''}
           </div>
         `).join('')}
 
         <!-- Time Rows -->
         ${hours.map(h => {
           const hourNum = parseInt(h.split(':')[0], 10);
-          const h12 = (hourNum % 12 || 12) + (hourNum >= 12 ? ' PM' : ' AM');
+          const h12 = formatHour12(hourNum, isAr);
 
           return `
             <!-- Time label -->
@@ -8040,7 +8165,7 @@ function renderWeeklyTimetableGrid(days) {
             <!-- 7 Day cells for this hour -->
             ${days.map(d => {
               // 1. Classes & Events
-              const cellEvents = (scheduleFilter === 'tasks') ? [] : events.filter(e => {
+              const cellEvents = (scheduleFilter === 'tasks' || scheduleFilter === 'routine') ? [] : events.filter(e => {
                 const dayMatch = (e.days && e.days.includes(d.dayIndex)) || (e.specificDate === d.dateStr);
                 if (!dayMatch) return false;
                 const startHour = parseInt((e.startTime || '09:00').split(':')[0], 10);
@@ -8048,7 +8173,7 @@ function renderWeeklyTimetableGrid(days) {
               });
 
               // 2. Synced Tasks
-              const cellTasks = (scheduleFilter === 'classes') ? [] : tasks.filter(t => {
+              const cellTasks = (scheduleFilter === 'classes' || scheduleFilter === 'routine') ? [] : tasks.filter(t => {
                 if (t.scheduledDate !== d.dateStr) return false;
                 const taskHour = parseInt((t.scheduledTime || '16:00').split(':')[0], 10);
                 return taskHour === hourNum;
@@ -8063,16 +8188,16 @@ function renderWeeklyTimetableGrid(days) {
               });
 
               return `
-                <div class="timetable-cell ${d.isToday ? 'is-today-cell' : ''}" onclick="showAddScheduleEventModal(${d.dayIndex}, '${h}')" title="Click to add event/task on ${d.name} at ${h}">
+                <div class="timetable-cell ${d.isToday ? 'is-today-cell' : ''}" onclick="showAddScheduleEventModal(${d.dayIndex}, '${h}')" title="${isAr ? `انقر لإضافة حصة أو موعد يوم ${d.name} الساعة ${h12}` : `Click to add event/task on ${d.name} at ${h}`}">
                   <!-- Render Events -->
                   ${cellEvents.map(e => `
-                    <div class="schedule-item" style="background:${e.color || '#3B82F6'}22; border-left:3px solid ${e.color || '#3B82F6'}; color:var(--text);" onclick="event.stopPropagation(); showEditEventModal('${e.id}')">
+                    <div class="schedule-item" style="background:${e.color || '#3B82F6'}22; border-${isAr ? 'right' : 'left'}:3px solid ${e.color || '#3B82F6'}; color:var(--text);" onclick="event.stopPropagation(); showEditEventModal('${e.id}')">
                       <div style="display:flex; align-items:center; justify-content:space-between; gap:4px;">
-                        <span style="font-size:10px; font-weight:800; color:${e.color || '#3B82F6'}; text-transform:uppercase;">${e.category || 'Class'}</span>
+                        <span style="font-size:10px; font-weight:800; color:${e.color || '#3B82F6'}; text-transform:uppercase;">${escHtml(localizeScheduleText(e.category || 'Class', isAr))}</span>
                         <span style="font-size:10px; color:var(--text2);">${e.startTime || ''}</span>
                       </div>
-                      <div style="font-weight:700; font-size:12px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escHtml(e.title)}</div>
-                      ${e.location ? `<div style="font-size:10px; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><i class="fas fa-location-dot" style="font-size:9px;"></i> ${escHtml(e.location)}</div>` : ''}
+                      <div style="font-weight:700; font-size:12px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escHtml(localizeScheduleText(e.title, isAr))}</div>
+                      ${e.location ? `<div style="font-size:10px; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><i class="fas fa-location-dot" style="font-size:9px;"></i> ${escHtml(localizeScheduleText(e.location, isAr))}</div>` : ''}
                     </div>
                   `).join('')}
 
@@ -8085,15 +8210,15 @@ function renderWeeklyTimetableGrid(days) {
                         <div style="display:flex; align-items:center; justify-content:space-between; gap:4px;">
                           <div style="display:flex; align-items:center; gap:6px;">
                             <input type="checkbox" ${t.completed ? 'checked' : ''} style="accent-color:var(--teal); width:13px; height:13px; cursor:pointer;" onclick="event.stopPropagation(); toggleTaskStep('${t.id}', 0);">
-                            <span style="font-size:10px; font-weight:700; color:var(--teal);"><i class="fas fa-list-check"></i> Task</span>
+                            <span style="font-size:10px; font-weight:700; color:var(--teal);"><i class="fas fa-list-check"></i> ${isAr ? 'مهمة' : 'Task'}</span>
                           </div>
-                          <span style="font-size:10px; color:var(--text2);">~${t.estMin || 15}m</span>
+                          <span style="font-size:10px; color:var(--text2);">~${t.estMin || 15}${isAr ? ' د' : 'm'}</span>
                         </div>
                         <div style="font-weight:700; font-size:12px; line-height:1.2; ${t.completed ? 'text-decoration:line-through;' : ''} white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                           ${escHtml(t.title)}
                         </div>
                         ${steps.length > 0 ? `
-                          <div style="font-size:10px; color:var(--text2);"><i class="fas fa-bars-progress"></i> ${doneCount}/${steps.length} steps</div>
+                          <div style="font-size:10px; color:var(--text2);"><i class="fas fa-bars-progress"></i> ${doneCount}/${steps.length} ${isAr ? 'خطوات' : 'steps'}</div>
                         ` : ''}
                       </div>
                     `;
@@ -8101,10 +8226,10 @@ function renderWeeklyTimetableGrid(days) {
 
                   <!-- Render Routine Indicator -->
                   ${cellRoutines.map(r => `
-                    <div class="schedule-item" style="background:${r.color || '#FF8C42'}18; border-left:3px solid ${r.color || '#FF8C42'}; color:var(--text); padding:4px 6px;" onclick="event.stopPropagation(); scheduleViewMode='routine'; renderSchedule();">
+                    <div class="schedule-item" style="background:${r.color || '#FF8C42'}18; border-${isAr ? 'right' : 'left'}:3px solid ${r.color || '#FF8C42'}; color:var(--text); padding:4px 6px;" onclick="event.stopPropagation(); scheduleViewMode='routine'; renderSchedule();">
                       <div style="display:flex; align-items:center; gap:6px; font-size:11px;">
                         <i class="fas ${r.icon || 'fa-sun'}" style="color:${r.color || '#FF8C42'}; font-size:11px;"></i>
-                        <span style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escHtml(r.title)}</span>
+                        <span style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escHtml(localizeScheduleText(r.title, isAr))}</span>
                       </div>
                     </div>
                   `).join('')}
@@ -8120,6 +8245,7 @@ function renderWeeklyTimetableGrid(days) {
 
 // ---------------- Day Agenda View ----------------
 function renderScheduleAgenda(days) {
+  const isAr = currentLang() === 'ar';
   const events = Store.get('scheduleEvents') || [];
   const tasks = Store.get('tasks') || [];
   const routines = Store.get('routines') || [];
@@ -8128,8 +8254,8 @@ function renderScheduleAgenda(days) {
   return `
     <div style="display:flex; flex-direction:column; gap:16px;">
       ${days.map(d => {
-        const dayEvents = (scheduleFilter === 'tasks') ? [] : events.filter(e => (e.days && e.days.includes(d.dayIndex)) || (e.specificDate === d.dateStr));
-        const dayTasks = (scheduleFilter === 'classes') ? [] : tasks.filter(t => t.scheduledDate === d.dateStr);
+        const dayEvents = (scheduleFilter === 'tasks' || scheduleFilter === 'routine') ? [] : events.filter(e => (e.days && e.days.includes(d.dayIndex)) || (e.specificDate === d.dateStr));
+        const dayTasks = (scheduleFilter === 'classes' || scheduleFilter === 'routine') ? [] : tasks.filter(t => t.scheduledDate === d.dateStr);
         const dayRoutines = (scheduleFilter === 'classes' || scheduleFilter === 'tasks') ? [] : routines.filter(r => !r.days || r.days.includes(d.dayIndex));
 
         const totalItems = dayEvents.length + dayTasks.length + dayRoutines.length;
@@ -8138,28 +8264,32 @@ function renderScheduleAgenda(days) {
           <div class="agenda-day-card ${d.isToday ? 'today' : ''}">
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);">
               <div style="display:flex; align-items:center; gap:12px;">
-                <div style="width:44px; height:44px; border-radius:12px; background:${d.isToday ? 'var(--teal)' : 'var(--bg)'}; color:${d.isToday ? '#0F0F14' : 'var(--text)'}; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:'Fredoka'; font-weight:700;">
-                  <span style="font-size:11px; text-transform:uppercase; line-height:1;">${d.name}</span>
-                  <span style="font-size:18px; line-height:1;">${d.dayNum}</span>
+                <div style="width:44px; height:44px; border-radius:12px; background:${d.isToday ? 'var(--teal)' : 'var(--bg)'}; color:${d.isToday ? '#0F0F14' : 'var(--text)'}; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:${isAr ? "'Cairo',sans-serif" : "'Fredoka',sans-serif"}; font-weight:700;">
+                  <span style="font-size:10px; text-transform:uppercase; line-height:1;">${d.name}</span>
+                  <span style="font-size:17px; line-height:1.1;">${d.dayNum}</span>
                 </div>
                 <div>
                   <h3 style="font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px;">
-                    ${d.fullName}, ${d.monthName} ${d.dayNum}
-                    ${d.isToday ? `<span class="tag" style="background:var(--teal); color:#0F0F14; font-size:11px;">TODAY</span>` : ''}
+                    ${isAr ? `${d.fullName}، ${d.dayNum} ${d.monthName}` : `${d.fullName}, ${d.monthName} ${d.dayNum}`}
+                    ${d.isToday ? `<span class="tag" style="background:var(--teal); color:#0F0F14; font-size:11px;">${isAr ? 'اليوم' : 'TODAY'}</span>` : ''}
                   </h3>
-                  <div style="font-size:12px; color:var(--text2);">${totalItems} item${totalItems === 1 ? '' : 's'} scheduled (${dayEvents.length} classes, ${dayTasks.length} tasks, ${dayRoutines.length} routines)</div>
+                  <div style="font-size:12px; color:var(--text2);">
+                    ${isAr
+                      ? `${totalItems} عناصر مجدولة (${dayEvents.length} حصص، ${dayTasks.length} مهام، ${dayRoutines.length} روتين)`
+                      : `${totalItems} item${totalItems === 1 ? '' : 's'} scheduled (${dayEvents.length} classes, ${dayTasks.length} tasks, ${dayRoutines.length} routines)`}
+                  </div>
                 </div>
               </div>
               <div style="display:flex; gap:8px;">
-                <button class="btn btn-sm btn-ghost" onclick="showAddScheduleEventModal(${d.dayIndex})" style="border:1px solid var(--border); font-size:12px;"><i class="fas fa-plus"></i> Add Event</button>
-                <button class="btn btn-sm btn-teal" onclick="showAddTaskModal('${d.dateStr}')" style="font-size:12px;"><i class="fas fa-list-check"></i> Add Task</button>
+                <button class="btn btn-sm btn-ghost" onclick="showAddScheduleEventModal(${d.dayIndex})" style="border:1px solid var(--border); font-size:12px;"><i class="fas fa-plus"></i> ${isAr ? 'إضافة موعد' : 'Add Event'}</button>
+                <button class="btn btn-sm btn-teal" onclick="showAddTaskModal('${d.dateStr}')" style="font-size:12px;"><i class="fas fa-list-check"></i> ${isAr ? 'إضافة مهمة' : 'Add Task'}</button>
               </div>
             </div>
 
             <!-- Items Container -->
             ${totalItems === 0 ? `
               <div style="text-align:center; padding:20px; color:var(--text2); font-size:13px;">
-                No schedule items or tasks for this day. <button class="btn btn-sm btn-ghost" onclick="showAddTaskModal('${d.dateStr}')" style="color:var(--teal);"><i class="fas fa-plus"></i> Schedule something</button>
+                ${isAr ? 'لا توجد مواعيد أو مهام مجدولة لهذا اليوم.' : 'No schedule items or tasks for this day.'} <button class="btn btn-sm btn-ghost" onclick="showAddTaskModal('${d.dateStr}')" style="color:var(--teal);"><i class="fas fa-plus"></i> ${isAr ? 'جدولة مهمة' : 'Schedule something'}</button>
               </div>
             ` : `
               <div style="display:flex; flex-direction:column; gap:10px;">
@@ -8167,36 +8297,36 @@ function renderScheduleAgenda(days) {
                 ${dayRoutines.map(r => {
                   const isDone = routineLogs[d.dateStr] && routineLogs[d.dateStr][r.id];
                   return `
-                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg); border-radius:10px; border-left:3px solid ${r.color || '#FF8C42'}; gap:12px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg); border-radius:10px; border-${isAr ? 'right' : 'left'}:3px solid ${r.color || '#FF8C42'}; gap:12px;">
                       <div style="display:flex; align-items:center; gap:12px;">
                         <input type="checkbox" ${isDone ? 'checked' : ''} style="accent-color:var(--accent); width:16px; height:16px; cursor:pointer;" onclick="toggleRoutineForDay('${r.id}', '${d.dateStr}')">
                         <div>
-                          <div style="font-weight:700; font-size:14px; ${isDone ? 'text-decoration:line-through; color:var(--text2);' : ''}">${escHtml(r.title)}</div>
-                          <div style="font-size:12px; color:var(--text2);"><i class="fas fa-clock"></i> ${r.targetTime || 'Routine'} &middot; ${r.steps ? r.steps.length : 0} habit steps</div>
+                          <div style="font-weight:700; font-size:14px; ${isDone ? 'text-decoration:line-through; color:var(--text2);' : ''}">${escHtml(localizeScheduleText(r.title, isAr))}</div>
+                          <div style="font-size:12px; color:var(--text2);"><i class="fas fa-clock"></i> ${r.targetTime || (isAr ? 'روتين' : 'Routine')} &middot; ${r.steps ? r.steps.length : 0} ${isAr ? 'خطوات عادة' : 'habit steps'}</div>
                         </div>
                       </div>
-                      <span class="tag" style="background:${r.color || '#FF8C42'}22; color:${r.color || '#FF8C42'}; font-size:11px;">${r.slot || 'Routine'}</span>
+                      <span class="tag" style="background:${r.color || '#FF8C42'}22; color:${r.color || '#FF8C42'}; font-size:11px;">${escHtml(localizeScheduleText(r.slot || 'Routine', isAr))}</span>
                     </div>
                   `;
                 }).join('')}
 
                 <!-- Classes & Events -->
                 ${dayEvents.map(e => `
-                  <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg); border-radius:10px; border-left:3px solid ${e.color || '#3B82F6'}; gap:12px;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg); border-radius:10px; border-${isAr ? 'right' : 'left'}:3px solid ${e.color || '#3B82F6'}; gap:12px;">
                     <div style="display:flex; align-items:center; gap:12px;">
                       <div style="width:36px; height:36px; border-radius:8px; background:${e.color || '#3B82F6'}22; color:${e.color || '#3B82F6'}; display:flex; align-items:center; justify-content:center; font-size:15px;">
                         <i class="fas fa-graduation-cap"></i>
                       </div>
                       <div>
-                        <div style="font-weight:700; font-size:14px;">${escHtml(e.title)}</div>
+                        <div style="font-weight:700; font-size:14px;">${escHtml(localizeScheduleText(e.title, isAr))}</div>
                         <div style="font-size:12px; color:var(--text2);">
-                          <i class="fas fa-clock"></i> ${e.startTime} - ${e.endTime} ${e.location ? `&middot; <i class="fas fa-location-dot"></i> ${escHtml(e.location)}` : ''}
+                          <i class="fas fa-clock"></i> ${e.startTime} - ${e.endTime} ${e.location ? `&middot; <i class="fas fa-location-dot"></i> ${escHtml(localizeScheduleText(e.location, isAr))}` : ''}
                         </div>
                       </div>
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                      <span class="tag" style="background:${e.color || '#3B82F6'}22; color:${e.color || '#3B82F6'}; font-size:11px;">${e.category || 'Class'}</span>
-                      <button class="btn btn-sm btn-ghost" onclick="showEditEventModal('${e.id}')" title="Edit Event"><i class="fas fa-pen"></i></button>
+                      <span class="tag" style="background:${e.color || '#3B82F6'}22; color:${e.color || '#3B82F6'}; font-size:11px;">${escHtml(localizeScheduleText(e.category || 'Class', isAr))}</span>
+                      <button class="btn btn-sm btn-ghost" onclick="showEditEventModal('${e.id}')" title="${isAr ? 'تعديل الموعد' : 'Edit Event'}"><i class="fas fa-pen"></i></button>
                     </div>
                   </div>
                 `).join('')}
@@ -8206,7 +8336,7 @@ function renderScheduleAgenda(days) {
                   const steps = t.steps || [];
                   const doneCount = steps.filter(s => s.done).length;
                   return `
-                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg); border-radius:10px; border-left:3px solid var(--teal); gap:12px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg); border-radius:10px; border-${isAr ? 'right' : 'left'}:3px solid var(--teal); gap:12px;">
                       <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
                         <input type="checkbox" ${t.completed ? 'checked' : ''} style="accent-color:var(--teal); width:16px; height:16px; cursor:pointer;" onclick="toggleTaskStep('${t.id}', 0)">
                         <div style="flex:1; min-width:0;">
@@ -8214,15 +8344,15 @@ function renderScheduleAgenda(days) {
                             ${escHtml(t.title)}
                           </div>
                           <div style="font-size:12px; color:var(--text2);">
-                            <span class="tag" style="background:rgba(var(--teal-rgb),0.1); color:var(--teal); font-size:11px;">${t.category || 'Task'}</span>
-                            &middot; <i class="fas fa-clock"></i> ${t.scheduledTime || '16:00'} (~${t.estMin || 15}m)
-                            ${steps.length ? `&middot; ${doneCount}/${steps.length} micro-steps` : ''}
+                            <span class="tag" style="background:rgba(var(--teal-rgb),0.1); color:var(--teal); font-size:11px;">${escHtml(localizeScheduleText(t.category || 'Task', isAr))}</span>
+                            &middot; <i class="fas fa-clock"></i> ${t.scheduledTime || '16:00'} (~${t.estMin || 15}${isAr ? ' د' : 'm'})
+                            ${steps.length ? `&middot; ${doneCount}/${steps.length} ${isAr ? 'خطوات دقيقة' : 'micro-steps'}` : ''}
                           </div>
                         </div>
                       </div>
                       <div style="display:flex; align-items:center; gap:8px;">
-                        <button class="btn btn-sm btn-teal" onclick="launchFocusForTask('${t.id}')"><i class="fas fa-play"></i> Focus</button>
-                        <button class="btn btn-sm btn-ghost" onclick="showTaskScheduleDetails('${t.id}')" title="Task details"><i class="fas fa-ellipsis-v"></i></button>
+                        <button class="btn btn-sm btn-teal" onclick="launchFocusForTask('${t.id}')"><i class="fas fa-play"></i> ${isAr ? 'تركيز' : 'Focus'}</button>
+                        <button class="btn btn-sm btn-ghost" onclick="showTaskScheduleDetails('${t.id}')" title="${isAr ? 'تفاصيل المهمة' : 'Task details'}"><i class="fas fa-ellipsis-v"></i></button>
                       </div>
                     </div>
                   `;
@@ -8238,15 +8368,22 @@ function renderScheduleAgenda(days) {
 
 // ---------------- Daily Routines View ----------------
 function renderDailyRoutinesTab(days) {
+  const isAr = currentLang() === 'ar';
   const routines = Store.get('routines') || [];
   const routineLogs = Store.get('routineLogs') || {};
   const todayStr = getLocalDateStr(new Date());
 
-  const slots = [
-    { key: 'morning', title: 'Morning Kickoff Routine', icon: 'fa-sun', color: '#FF8C42', desc: 'Prime your brain and environment before classes begin.' },
-    { key: 'afternoon', title: 'Afternoon Brain Reset', icon: 'fa-bolt', color: '#4ECDC4', desc: 'Decompress from classes and transition smoothly into study mode.' },
-    { key: 'evening', title: 'Evening Wind Down & Prep', icon: 'fa-moon', color: '#8B5CF6', desc: 'Solidify memories, review flashcards, and prep for tomorrow.' }
-  ];
+  const slots = isAr
+    ? [
+        { key: 'morning', title: 'روتين البداية الصباحية', icon: 'fa-sun', color: '#FF8C42', desc: 'هيّئ ذهنك ومحيطك قبل بدء الحصص والدراسة.' },
+        { key: 'afternoon', title: 'استعادة النشاط بعد الظهر', icon: 'fa-bolt', color: '#4ECDC4', desc: 'تخلّص من ضغط اليوم الدراسي وانتقل بسلاسة إلى المذاكرة.' },
+        { key: 'evening', title: 'الهدوء المسائي والتحضير', icon: 'fa-moon', color: '#8B5CF6', desc: 'ثبّت المعلومات، راجع البطاقات، واستعد ليوم الغد.' }
+      ]
+    : [
+        { key: 'morning', title: 'Morning Kickoff Routine', icon: 'fa-sun', color: '#FF8C42', desc: 'Prime your brain and environment before classes begin.' },
+        { key: 'afternoon', title: 'Afternoon Brain Reset', icon: 'fa-bolt', color: '#4ECDC4', desc: 'Decompress from classes and transition smoothly into study mode.' },
+        { key: 'evening', title: 'Evening Wind Down & Prep', icon: 'fa-moon', color: '#8B5CF6', desc: 'Solidify memories, review flashcards, and prep for tomorrow.' }
+      ];
 
   return `
     <div style="display:flex; flex-direction:column; gap:20px;">
@@ -8254,10 +8391,10 @@ function renderDailyRoutinesTab(days) {
       <div class="card card-glow" style="padding:20px; background:linear-gradient(135deg, var(--card) 0%, rgba(var(--accent-rgb),0.08) 100%);">
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
           <div>
-            <h2 style="font-size:20px; font-weight:700; margin-bottom:4px;">Daily Routines & ADHD Habit Loops</h2>
-            <p style="font-size:14px; color:var(--text2);">Anchor habits around existing daily triggers. Small consistent routines reduce executive dysfunction.</p>
+            <h2 style="font-size:20px; font-weight:700; margin-bottom:4px;">${isAr ? 'الروتين اليومي وعادات التركيز لـ ADHD' : 'Daily Routines & ADHD Habit Loops'}</h2>
+            <p style="font-size:14px; color:var(--text2);">${isAr ? 'اربط عاداتك بمحفزات يومية ثابتة؛ فالروتين المنتظم والبسيط يقلل من تشتت البداية وصعوبة التنظيم.' : 'Anchor habits around existing daily triggers. Small consistent routines reduce executive dysfunction.'}</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="showRoutineModal()"><i class="fas fa-plus"></i> Create Routine</button>
+          <button class="btn btn-primary btn-sm" onclick="showRoutineModal()"><i class="fas fa-plus"></i> ${isAr ? 'إنشاء روتين جديد' : 'Create Routine'}</button>
         </div>
       </div>
 
@@ -8265,11 +8402,12 @@ function renderDailyRoutinesTab(days) {
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
         ${slots.map(slot => {
           const slotRoutines = routines.filter(r => (r.slot || 'morning') === slot.key);
+          const slotLabelAr = localizeScheduleText(slot.key, true);
           return `
             <div class="card" style="display:flex; flex-direction:column; gap:14px;">
               <div style="display:flex; align-items:center; justify-content:space-between;">
                 <div style="display:flex; align-items:center; gap:10px;">
-                  <div style="width:38px; height:38px; border-radius:10px; background:${slot.color}22; color:${slot.color}; display:flex; align-items:center; justify-content:center; font-size:18px;">
+                  <div style="width:38px; height:38px; border-radius:10px; background:${slot.color}22; color:${slot.color}; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">
                     <i class="fas ${slot.icon}"></i>
                   </div>
                   <div>
@@ -8281,9 +8419,9 @@ function renderDailyRoutinesTab(days) {
 
               ${slotRoutines.length === 0 ? `
                 <div style="text-align:center; padding:24px 12px; color:var(--text2); font-size:13px; background:var(--bg); border-radius:10px;">
-                  No ${slot.key} routine configured. <br>
+                  ${isAr ? `لا يوجد روتين محدد لفترة ${slotLabelAr}.` : `No ${slot.key} routine configured.`} <br>
                   <button class="btn btn-sm btn-ghost" onclick="showRoutineModal('${slot.key}')" style="color:var(--teal); margin-top:6px;">
-                    <i class="fas fa-plus"></i> Add ${slot.key} habit
+                    <i class="fas fa-plus"></i> ${isAr ? `إضافة عادة ${slotLabelAr}` : `Add ${slot.key} habit`}
                   </button>
                 </div>
               ` : slotRoutines.map(r => {
@@ -8295,10 +8433,10 @@ function renderDailyRoutinesTab(days) {
                     <div style="display:flex; align-items:center; justify-content:space-between;">
                       <div style="display:flex; align-items:center; gap:8px;">
                         <input type="checkbox" ${isTodayDone ? 'checked' : ''} style="accent-color:${slot.color}; width:18px; height:18px; cursor:pointer;" onclick="toggleRoutineForDay('${r.id}', '${todayStr}')">
-                        <span style="font-weight:700; font-size:14px; ${isTodayDone ? 'text-decoration:line-through; color:var(--text2);' : ''}">${escHtml(r.title)}</span>
+                        <span style="font-weight:700; font-size:14px; ${isTodayDone ? 'text-decoration:line-through; color:var(--text2);' : ''}">${escHtml(localizeScheduleText(r.title, isAr))}</span>
                       </div>
                       <div style="display:flex; align-items:center; gap:6px;">
-                        <span class="tag" style="background:rgba(255,255,255,0.06); font-size:11px;"><i class="fas fa-clock"></i> ${r.targetTime || 'Anytime'}</span>
+                        <span class="tag" style="background:rgba(255,255,255,0.06); font-size:11px;"><i class="fas fa-clock"></i> ${r.targetTime || (isAr ? 'أي وقت' : 'Anytime')}</span>
                         <button class="btn btn-sm btn-ghost" style="color:var(--red); padding:4px;" onclick="deleteRoutine('${r.id}')"><i class="fas fa-trash"></i></button>
                       </div>
                     </div>
@@ -8306,10 +8444,10 @@ function renderDailyRoutinesTab(days) {
                     <!-- Steps Checklist -->
                     ${steps.length > 0 ? `
                       <div style="display:flex; flex-direction:column; gap:6px; margin-top:4px;">
-                        ${steps.map((st, sIdx) => `
+                        ${steps.map(st => `
                           <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text2); padding:4px 6px; background:var(--card); border-radius:6px;">
                             <i class="fas fa-check-circle" style="color:${slot.color}; font-size:11px;"></i>
-                            <span>${escHtml(st)}</span>
+                            <span>${escHtml(localizeScheduleText(st, isAr))}</span>
                           </div>
                         `).join('')}
                       </div>
@@ -8317,13 +8455,14 @@ function renderDailyRoutinesTab(days) {
 
                     <!-- 7-day mini progress dots for this week -->
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px; padding-top:8px; border-top:1px solid var(--border); font-size:11px; color:var(--text2);">
-                      <span>This Week Progress:</span>
+                      <span>${isAr ? 'تقدم هذا الأسبوع:' : 'This Week Progress:'}</span>
                       <div style="display:flex; gap:6px;">
                         ${days.map(d => {
                           const doneOnDay = routineLogs[d.dateStr] && routineLogs[d.dateStr][r.id];
+                          const shortLetter = isAr ? d.name.replace(/^ال/, '').charAt(0) : d.name[0];
                           return `
-                            <div title="${d.name} (${d.dateStr}): ${doneOnDay ? 'Completed' : 'Pending'}" style="width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:${doneOnDay ? slot.color : 'var(--border)'}; color:${doneOnDay ? '#0F0F14' : 'var(--text2)'}; cursor:pointer;" onclick="toggleRoutineForDay('${r.id}', '${d.dateStr}')">
-                              ${d.name[0]}
+                            <div title="${d.name} (${d.dateStr}): ${doneOnDay ? (isAr ? 'مكتمل' : 'Completed') : (isAr ? 'قيد الانتظار' : 'Pending')}" style="width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:${doneOnDay ? slot.color : 'var(--border)'}; color:${doneOnDay ? '#0F0F14' : 'var(--text2)'}; cursor:pointer;" onclick="toggleRoutineForDay('${r.id}', '${d.dateStr}')">
+                              ${shortLetter}
                             </div>
                           `;
                         }).join('')}
@@ -8342,10 +8481,11 @@ function renderDailyRoutinesTab(days) {
 
 // ---------------- Auto-Sync Tasks Engine ----------------
 function autoSyncTasksToSchedule() {
+  const isAr = currentLang() === 'ar';
   const tasks = Store.get('tasks') || [];
   const pendingTasks = tasks.filter(t => !t.completed);
   if (!pendingTasks.length) {
-    toast('No pending tasks to schedule!', 'info');
+    toast(isAr ? 'لا توجد مهام معلقة لجدولتها حاليًا!' : 'No pending tasks to schedule!', 'info');
     return;
   }
 
@@ -8370,12 +8510,18 @@ function autoSyncTasksToSchedule() {
 
   Store.set('tasks', tasks);
   SFX.bonus();
-  toast(`Auto-synced ${syncedCount} task${syncedCount === 1 ? '' : 's'} across your weekly timetable!`, 'success');
+  toast(
+    isAr
+      ? `تمت مزامنة ${syncedCount} ${syncedCount === 1 ? 'مهمة' : 'مهام'} تلقائيًا على جدولك الأسبوعي!`
+      : `Auto-synced ${syncedCount} task${syncedCount === 1 ? '' : 's'} across your weekly timetable!`,
+    'success'
+  );
   renderSchedule();
 }
 
 // ---------------- Modals & Event Management ----------------
 function showAddScheduleEventModal(defaultDay, defaultHour) {
+  const isAr = currentLang() === 'ar';
   const sched = getScheduleSettings();
   const dayIndex = defaultDay !== undefined ? defaultDay : sched.weekStartDay;
   const startTime = defaultHour || (String(sched.dayStartHour).padStart(2, '0') + ':00');
@@ -8383,50 +8529,50 @@ function showAddScheduleEventModal(defaultDay, defaultHour) {
   const endHour = String(Math.min(23, hourNum + 1)).padStart(2, '0') + ':00';
 
   showModal(`
-    <h2 style="font-size:20px; font-weight:700; margin-bottom:16px;">Add Timetable Event / Class</h2>
+    <h2 style="font-size:20px; font-weight:700; margin-bottom:16px;">${isAr ? 'إضافة حصة أو موعد إلى الجدول' : 'Add Timetable Event / Class'}</h2>
     <div style="margin-bottom:12px;">
-      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Title / Subject</label>
-      <input class="input" id="evt-title-inp" placeholder="e.g. Mathematics, Chemistry, or Study Session" autofocus>
+      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'العنوان / اسم المادة' : 'Title / Subject'}</label>
+      <input class="input" id="evt-title-inp" placeholder="${isAr ? 'مثال: رياضيات، كيمياء، أو جلسة استذكار' : 'e.g. Mathematics, Chemistry, or Study Session'}" autofocus>
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
       <div>
-        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Category</label>
+        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'التصنيف' : 'Category'}</label>
         <select class="input" id="evt-cat-inp">
-          <option value="Class">Class / Lecture</option>
-          <option value="Study">Deep Work / Study</option>
-          <option value="Activity">Sports / Activity</option>
-          <option value="Exam">Exam / Quiz</option>
-          <option value="Personal">Personal Routine</option>
+          <option value="Class">${isAr ? 'حصة / محاضرة' : 'Class / Lecture'}</option>
+          <option value="Study">${isAr ? 'مذاكرة / عمل عميق' : 'Deep Work / Study'}</option>
+          <option value="Activity">${isAr ? 'رياضة / نشاط' : 'Sports / Activity'}</option>
+          <option value="Exam">${isAr ? 'اختبار / تقييم' : 'Exam / Quiz'}</option>
+          <option value="Personal">${isAr ? 'روتين شخصي' : 'Personal Routine'}</option>
         </select>
       </div>
       <div>
-        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Color Accent</label>
+        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'اللون المميّز' : 'Color Accent'}</label>
         <select class="input" id="evt-color-inp">
-          <option value="#3B82F6">Blue (Math/Science)</option>
-          <option value="#A855F7">Purple (Languages)</option>
-          <option value="#10B981">Green (Biology/Lab)</option>
-          <option value="#F59E0B">Amber (History/Social)</option>
-          <option value="#FF8C42">Orange (Focus Sprint)</option>
-          <option value="#EC4899">Pink (Arts/Sports)</option>
+          <option value="#3B82F6">${isAr ? 'أزرق (رياضيات / علوم)' : 'Blue (Math/Science)'}</option>
+          <option value="#A855F7">${isAr ? 'بنفسجي (لغات)' : 'Purple (Languages)'}</option>
+          <option value="#10B981">${isAr ? 'أخضر (أحياء / معمل)' : 'Green (Biology/Lab)'}</option>
+          <option value="#F59E0B">${isAr ? 'كهرماني (تاريخ / دراسات)' : 'Amber (History/Social)'}</option>
+          <option value="#FF8C42">${isAr ? 'برتقالي (جلسة تركيز)' : 'Orange (Focus Sprint)'}</option>
+          <option value="#EC4899">${isAr ? 'وردي (فنون / رياضة)' : 'Pink (Arts/Sports)'}</option>
         </select>
       </div>
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
       <div>
-        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Start Time</label>
+        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'وقت البدء' : 'Start Time'}</label>
         <select class="input" id="evt-start-inp">
           ${getTimeSlotOptions(startTime)}
         </select>
       </div>
       <div>
-        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">End Time</label>
+        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'وقت الانتهاء' : 'End Time'}</label>
         <select class="input" id="evt-end-inp">
           ${getTimeSlotOptions(endHour)}
         </select>
       </div>
     </div>
     <div style="margin-bottom:12px;">
-      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:6px;">Recurring Days of Week</label>
+      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:6px;">${isAr ? 'أيام التكرار الأسبوعية' : 'Recurring Days of Week'}</label>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
         ${getOrderedWeekDaysList().map(item => `
           <label style="display:flex; align-items:center; gap:4px; font-size:12px; background:var(--bg); padding:6px 10px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
@@ -8437,17 +8583,18 @@ function showAddScheduleEventModal(defaultDay, defaultHour) {
       </div>
     </div>
     <div style="margin-bottom:16px;">
-      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Room / Location / Notes (optional)</label>
-      <input class="input" id="evt-loc-inp" placeholder="e.g. Room 204 or Online Zoom link">
+      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'القاعة / المكان / ملاحظات (اختياري)' : 'Room / Location / Notes (optional)'}</label>
+      <input class="input" id="evt-loc-inp" placeholder="${isAr ? 'مثال: فصل 204 أو رابط الحصة' : 'e.g. Room 204 or Online Zoom link'}">
     </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveScheduleEvent()"><i class="fas fa-check"></i> Save to Timetable</button>
+      <button class="btn btn-secondary" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+      <button class="btn btn-primary" onclick="saveScheduleEvent()"><i class="fas fa-check"></i> ${isAr ? 'حفظ في الجدول' : 'Save to Timetable'}</button>
     </div>
   `);
 }
 
 function saveScheduleEvent() {
+  const isAr = currentLang() === 'ar';
   const titleEl = document.getElementById('evt-title-inp');
   const catEl = document.getElementById('evt-cat-inp');
   const colorEl = document.getElementById('evt-color-inp');
@@ -8457,7 +8604,7 @@ function saveScheduleEvent() {
 
   const title = titleEl ? titleEl.value.trim() : '';
   if (!title) {
-    toast('Please enter a title or subject', 'warn');
+    toast(isAr ? 'يرجى إدخال عنوان الحصة أو المادة' : 'Please enter a title or subject', 'warn');
     return;
   }
 
@@ -8481,50 +8628,55 @@ function saveScheduleEvent() {
   Store.set('scheduleEvents', events);
   closeModal();
   SFX.click();
-  toast(`Added "${title}" to your timetable!`, 'success');
+  toast(isAr ? `تمت إضافة "${title}" إلى جدولك!` : `Added "${title}" to your timetable!`, 'success');
   renderSchedule();
 }
 
 function showEditEventModal(eventId) {
+  const isAr = currentLang() === 'ar';
   const events = Store.get('scheduleEvents') || [];
   const evt = events.find(e => e.id === eventId);
   if (!evt) return;
 
+  const displayTitle = localizeScheduleText(evt.title, isAr);
+  const displayLoc = localizeScheduleText(evt.location || '', isAr);
+
   showModal(`
-    <h2 style="font-size:20px; font-weight:700; margin-bottom:16px;">Edit Event: ${escHtml(evt.title)}</h2>
+    <h2 style="font-size:20px; font-weight:700; margin-bottom:16px;">${isAr ? 'تعديل الموعد:' : 'Edit Event:'} ${escHtml(displayTitle)}</h2>
     <div style="margin-bottom:14px;">
-      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Title</label>
-      <input class="input" id="edit-evt-title" value="${escHtml(evt.title)}">
+      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'العنوان' : 'Title'}</label>
+      <input class="input" id="edit-evt-title" value="${escHtml(displayTitle)}">
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
       <div>
-        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Start Time</label>
+        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'وقت البدء' : 'Start Time'}</label>
         <select class="input" id="edit-evt-start">
           ${getTimeSlotOptions(evt.startTime)}
         </select>
       </div>
       <div>
-        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">End Time</label>
+        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'وقت الانتهاء' : 'End Time'}</label>
         <select class="input" id="edit-evt-end">
           ${getTimeSlotOptions(evt.endTime)}
         </select>
       </div>
     </div>
     <div style="margin-bottom:16px;">
-      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Location / Notes</label>
-      <input class="input" id="edit-evt-loc" value="${escHtml(evt.location || '')}">
+      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'المكان / ملاحظات' : 'Location / Notes'}</label>
+      <input class="input" id="edit-evt-loc" value="${escHtml(displayLoc)}">
     </div>
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <button class="btn btn-sm btn-ghost" style="color:var(--red);" onclick="deleteScheduleEvent('${evt.id}')"><i class="fas fa-trash"></i> Delete Event</button>
+      <button class="btn btn-sm btn-ghost" style="color:var(--red);" onclick="deleteScheduleEvent('${evt.id}')"><i class="fas fa-trash"></i> ${isAr ? 'حذف الموعد' : 'Delete Event'}</button>
       <div style="display:flex; gap:8px;">
-        <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary btn-sm" onclick="updateScheduleEvent('${evt.id}')"><i class="fas fa-check"></i> Save Changes</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+        <button class="btn btn-primary btn-sm" onclick="updateScheduleEvent('${evt.id}')"><i class="fas fa-check"></i> ${isAr ? 'حفظ التغييرات' : 'Save Changes'}</button>
       </div>
     </div>
   `);
 }
 
 function updateScheduleEvent(eventId) {
+  const isAr = currentLang() === 'ar';
   const events = Store.get('scheduleEvents') || [];
   const evt = events.find(e => e.id === eventId);
   if (!evt) return;
@@ -8542,22 +8694,24 @@ function updateScheduleEvent(eventId) {
   Store.set('scheduleEvents', events);
   closeModal();
   SFX.click();
-  toast('Event updated!', 'success');
+  toast(isAr ? 'تم تحديث الموعد بنجاح!' : 'Event updated!', 'success');
   renderSchedule();
 }
 
 function deleteScheduleEvent(id) {
+  const isAr = currentLang() === 'ar';
   let events = Store.get('scheduleEvents') || [];
   events = events.filter(e => e.id !== id);
   Store.set('scheduleEvents', events);
   closeModal();
   SFX.click();
-  toast('Event removed from timetable', 'info');
+  toast(isAr ? 'تم حذف الموعد من الجدول' : 'Event removed from timetable', 'info');
   renderSchedule();
 }
 
 // ---------------- Task Detail & Reschedule Modal ----------------
 function showTaskScheduleDetails(taskId) {
+  const isAr = currentLang() === 'ar';
   const tasks = Store.get('tasks') || [];
   const task = tasks.find(t => t.id === taskId);
   if (!task) return;
@@ -8569,21 +8723,21 @@ function showTaskScheduleDetails(taskId) {
       <i class="fas fa-list-check" style="color:var(--teal);"></i> ${escHtml(task.title)}
     </h2>
     <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
-      <span class="tag" style="background:rgba(var(--teal-rgb),0.1); color:var(--teal); font-weight:700;">${task.category || 'Personal'}</span>
-      <span class="tag" style="background:var(--bg); border:1px solid var(--border);"><i class="fas fa-clock"></i> ~${task.estMin || 15}m</span>
-      ${task.completed ? `<span class="tag" style="background:rgba(126,231,135,0.15); color:var(--green);"><i class="fas fa-check"></i> Completed</span>` : ''}
+      <span class="tag" style="background:rgba(var(--teal-rgb),0.1); color:var(--teal); font-weight:700;">${escHtml(localizeScheduleText(task.category || 'Personal', isAr))}</span>
+      <span class="tag" style="background:var(--bg); border:1px solid var(--border);"><i class="fas fa-clock"></i> ~${task.estMin || 15}${isAr ? ' د' : 'm'}</span>
+      ${task.completed ? `<span class="tag" style="background:rgba(126,231,135,0.15); color:var(--green);"><i class="fas fa-check"></i> ${isAr ? 'مكتملة' : 'Completed'}</span>` : ''}
     </div>
 
     <!-- Date & Time Slot Changer -->
     <div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:16px;">
-      <div style="font-weight:700; font-size:13px; margin-bottom:8px;">Schedule Assignment</div>
+      <div style="font-weight:700; font-size:13px; margin-bottom:8px;">${isAr ? 'تحديد موعد المهمة في الجدول' : 'Schedule Assignment'}</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
         <div>
-          <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:3px;">Date</label>
+          <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:3px;">${isAr ? 'التاريخ' : 'Date'}</label>
           <input type="date" class="input" id="sched-task-date" value="${task.scheduledDate || getLocalDateStr(new Date())}" style="font-size:13px; padding:6px 10px;">
         </div>
         <div>
-          <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:3px;">Time Slot</label>
+          <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:3px;">${isAr ? 'الفترة الزمنية' : 'Time Slot'}</label>
           <select class="input" id="sched-task-time" style="font-size:13px; padding:6px 10px;">
             ${getTimeSlotOptions(task.scheduledTime || '16:00')}
           </select>
@@ -8594,7 +8748,7 @@ function showTaskScheduleDetails(taskId) {
     <!-- Micro-steps checklist -->
     ${steps.length > 0 ? `
       <div style="margin-bottom:16px;">
-        <label style="font-size:13px; font-weight:700; display:block; margin-bottom:8px;">Micro-Steps</label>
+        <label style="font-size:13px; font-weight:700; display:block; margin-bottom:8px;">${isAr ? 'الخطوات الدقيقة' : 'Micro-Steps'}</label>
         <div style="display:flex; flex-direction:column; gap:6px;">
           ${steps.map((st, idx) => `
             <div class="task-step-check" onclick="toggleTaskStep('${task.id}', ${idx}); showTaskScheduleDetails('${task.id}');">
@@ -8608,12 +8762,12 @@ function showTaskScheduleDetails(taskId) {
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
       <button class="btn btn-teal btn-sm" onclick="closeModal(); launchFocusForTask('${task.id}')">
-        <i class="fas fa-play"></i> Focus on Task
+        <i class="fas fa-play"></i> ${isAr ? 'تركيز على المهمة' : 'Focus on Task'}
       </button>
       <div style="display:flex; gap:8px;">
-        <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
         <button class="btn btn-primary btn-sm" onclick="applyTaskScheduleChange('${task.id}')">
-          <i class="fas fa-check"></i> Save Schedule
+          <i class="fas fa-check"></i> ${isAr ? 'حفظ الموعد' : 'Save Schedule'}
         </button>
       </div>
     </div>
@@ -8621,6 +8775,7 @@ function showTaskScheduleDetails(taskId) {
 }
 
 function applyTaskScheduleChange(taskId) {
+  const isAr = currentLang() === 'ar';
   const tasks = Store.get('tasks') || [];
   const task = tasks.find(t => t.id === taskId);
   if (!task) return;
@@ -8634,12 +8789,18 @@ function applyTaskScheduleChange(taskId) {
   Store.set('tasks', tasks);
   closeModal();
   SFX.click();
-  toast(`Task rescheduled to ${task.scheduledDate} at ${task.scheduledTime}!`, 'success');
+  toast(
+    isAr
+      ? `تمت جدولة المهمة ليوم ${task.scheduledDate} الساعة ${task.scheduledTime}!`
+      : `Task rescheduled to ${task.scheduledDate} at ${task.scheduledTime}!`,
+    'success'
+  );
   renderSchedule();
 }
 
 // ---------------- Routine Habit Management ----------------
 function toggleRoutineForDay(routineId, dateStr) {
+  const isAr = currentLang() === 'ar';
   const routineLogs = Store.get('routineLogs') || {};
   if (!routineLogs[dateStr]) routineLogs[dateStr] = {};
 
@@ -8650,7 +8811,7 @@ function toggleRoutineForDay(routineId, dateStr) {
   if (!current) {
     Store.addXP(10);
     SFX.click();
-    toast('Routine completed! +10 XP', 'bonus');
+    toast(isAr ? 'تم إكمال الروتين! +10 نقطة خبرة' : 'Routine completed! +10 XP', 'bonus');
   } else {
     SFX.click();
   }
@@ -8659,38 +8820,40 @@ function toggleRoutineForDay(routineId, dateStr) {
 }
 
 function showRoutineModal(defaultSlot) {
+  const isAr = currentLang() === 'ar';
   showModal(`
-    <h2 style="font-size:20px; font-weight:700; margin-bottom:16px;">New Daily Routine</h2>
+    <h2 style="font-size:20px; font-weight:700; margin-bottom:16px;">${isAr ? 'روتين يومي جديد' : 'New Daily Routine'}</h2>
     <div style="margin-bottom:12px;">
-      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Routine Title</label>
-      <input class="input" id="rt-title-inp" placeholder="e.g. Afternoon Study Power Hour" autofocus>
+      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'عنوان الروتين' : 'Routine Title'}</label>
+      <input class="input" id="rt-title-inp" placeholder="${isAr ? 'مثال: ساعة المذاكرة المركزة بعد الظهر' : 'e.g. Afternoon Study Power Hour'}" autofocus>
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
       <div>
-        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Time of Day</label>
+        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'الفترة من اليوم' : 'Time of Day'}</label>
         <select class="input" id="rt-slot-inp">
-          <option value="morning" ${defaultSlot === 'morning' ? 'selected' : ''}>Morning</option>
-          <option value="afternoon" ${defaultSlot === 'afternoon' ? 'selected' : ''}>Afternoon</option>
-          <option value="evening" ${defaultSlot === 'evening' ? 'selected' : ''}>Evening</option>
+          <option value="morning" ${defaultSlot === 'morning' ? 'selected' : ''}>${isAr ? 'الصباح' : 'Morning'}</option>
+          <option value="afternoon" ${defaultSlot === 'afternoon' ? 'selected' : ''}>${isAr ? 'بعد الظهر' : 'Afternoon'}</option>
+          <option value="evening" ${defaultSlot === 'evening' ? 'selected' : ''}>${isAr ? 'المساء' : 'Evening'}</option>
         </select>
       </div>
       <div>
-        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Target Time</label>
+        <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'الوقت المستهدف' : 'Target Time'}</label>
         <input type="time" class="input" id="rt-time-inp" value="16:00">
       </div>
     </div>
     <div style="margin-bottom:16px;">
-      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Habit Steps (one per line)</label>
-      <textarea class="input" id="rt-steps-inp" rows="3" placeholder="Step 1: Drink water&#10;Step 2: Clear desk&#10;Step 3: Turn on brown noise"></textarea>
+      <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">${isAr ? 'خطوات العادة (خطوة في كل سطر)' : 'Habit Steps (one per line)'}</label>
+      <textarea class="input" id="rt-steps-inp" rows="3" placeholder="${isAr ? 'الخطوة 1: شرب كوب ماء&#10;الخطوة 2: ترتيب المكتب&#10;الخطوة 3: تشغيل الضوضاء البنية' : 'Step 1: Drink water&#10;Step 2: Clear desk&#10;Step 3: Turn on brown noise'}"></textarea>
     </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveCustomRoutine()"><i class="fas fa-check"></i> Create Routine</button>
+      <button class="btn btn-secondary" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+      <button class="btn btn-primary" onclick="saveCustomRoutine()"><i class="fas fa-check"></i> ${isAr ? 'إنشاء الروتين' : 'Create Routine'}</button>
     </div>
   `);
 }
 
 function saveCustomRoutine() {
+  const isAr = currentLang() === 'ar';
   const titleEl = document.getElementById('rt-title-inp');
   const slotEl = document.getElementById('rt-slot-inp');
   const timeEl = document.getElementById('rt-time-inp');
@@ -8698,7 +8861,7 @@ function saveCustomRoutine() {
 
   const title = titleEl ? titleEl.value.trim() : '';
   if (!title) {
-    toast('Please enter a routine title', 'warn');
+    toast(isAr ? 'يرجى كتابة عنوان الروتين' : 'Please enter a routine title', 'warn');
     return;
   }
 
@@ -8724,53 +8887,56 @@ function saveCustomRoutine() {
   Store.set('routines', routines);
   closeModal();
   SFX.click();
-  toast(`Routine "${title}" saved!`, 'success');
+  toast(isAr ? `تم حفظ الروتين "${title}"!` : `Routine "${title}" saved!`, 'success');
   renderSchedule();
 }
 
 function deleteRoutine(id) {
+  const isAr = currentLang() === 'ar';
   let routines = Store.get('routines') || [];
   routines = routines.filter(r => r.id !== id);
   Store.set('routines', routines);
   SFX.click();
-  toast('Routine removed', 'info');
+  toast(isAr ? 'تم حذف الروتين' : 'Routine removed', 'info');
   renderSchedule();
 }
 
 function showRoutineTemplateModal() {
+  const isAr = currentLang() === 'ar';
   showModal(`
-    <h2 style="font-size:20px; font-weight:700; margin-bottom:14px;">Timetable & Routine Presets</h2>
-    <p style="color:var(--text2); font-size:14px; margin-bottom:16px;">Quickly load a structured weekly timetable template tailored to your schedule:</p>
+    <h2 style="font-size:20px; font-weight:700; margin-bottom:14px;">${isAr ? 'قوالب الجدول والروتين الجاهزة' : 'Timetable & Routine Presets'}</h2>
+    <p style="color:var(--text2); font-size:14px; margin-bottom:16px;">${isAr ? 'حمّل بسرعة نموذج جدول أسبوعي منظم يناسب احتياجاتك الدراسية:' : 'Quickly load a structured weekly timetable template tailored to your schedule:'}</p>
     <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
       <div class="card" style="cursor:pointer; padding:14px;" onclick="applySchedulePreset('school')">
         <div style="display:flex; align-items:center; justify-content:space-between;">
-          <div style="font-weight:700; font-size:15px;"><i class="fas fa-school" style="color:var(--teal); margin-right:8px;"></i> Standard School Week</div>
-          <span class="btn btn-sm btn-teal">Apply</span>
+          <div style="font-weight:700; font-size:15px;"><i class="fas fa-school" style="color:var(--teal); margin-${isAr ? 'left' : 'right'}:8px;"></i> ${isAr ? 'الأسبوع الدراسي القياسي' : 'Standard School Week'}</div>
+          <span class="btn btn-sm btn-teal">${isAr ? 'تطبيق' : 'Apply'}</span>
         </div>
-        <div style="font-size:12px; color:var(--text2); margin-top:4px;">Mon-Fri 9AM-2PM classes (Math, Science, English, History) + 4PM daily deep focus blocks.</div>
+        <div style="font-size:12px; color:var(--text2); margin-top:4px;">${isAr ? 'حصص من 9 صباحًا حتى 2 ظهرًا (رياضيات، علوم، إنجليزي، تاريخ) + جلسات تركيز يومية الساعة 4 عصرًا.' : 'Mon-Fri 9AM-2PM classes (Math, Science, English, History) + 4PM daily deep focus blocks.'}</div>
       </div>
       <div class="card" style="cursor:pointer; padding:14px;" onclick="applySchedulePreset('exam')">
         <div style="display:flex; align-items:center; justify-content:space-between;">
-          <div style="font-weight:700; font-size:15px;"><i class="fas fa-bolt" style="color:var(--accent); margin-right:8px;"></i> Exam Prep Sprint</div>
-          <span class="btn btn-sm btn-primary">Apply</span>
+          <div style="font-weight:700; font-size:15px;"><i class="fas fa-bolt" style="color:var(--accent); margin-${isAr ? 'left' : 'right'}:8px;"></i> ${isAr ? 'معسكر الاستعداد للامتحانات' : 'Exam Prep Sprint'}</div>
+          <span class="btn btn-sm btn-primary">${isAr ? 'تطبيق' : 'Apply'}</span>
         </div>
-        <div style="font-size:12px; color:var(--text2); margin-top:4px;">High-intensity review blocks: Morning flashcards, afternoon past exam tests, evening relaxation.</div>
+        <div style="font-size:12px; color:var(--text2); margin-top:4px;">${isAr ? 'فترات مراجعة مكثفة: بطاقات صباحية، حل امتحانات سابقة عصرًا، وراحة مسائية.' : 'High-intensity review blocks: Morning flashcards, afternoon past exam tests, evening relaxation.'}</div>
       </div>
       <div class="card" style="cursor:pointer; padding:14px;" onclick="applySchedulePreset('adhd')">
         <div style="display:flex; align-items:center; justify-content:space-between;">
-          <div style="font-weight:700; font-size:15px;"><i class="fas fa-brain" style="color:#A855F7; margin-right:8px;"></i> ADHD Low-Friction Routine</div>
-          <span class="btn btn-sm btn-secondary">Apply</span>
+          <div style="font-weight:700; font-size:15px;"><i class="fas fa-brain" style="color:#A855F7; margin-${isAr ? 'left' : 'right'}:8px;"></i> ${isAr ? 'روتين مرن ومنخفض الاحتكاك (ADHD)' : 'ADHD Low-Friction Routine'}</div>
+          <span class="btn btn-sm btn-secondary">${isAr ? 'تطبيق' : 'Apply'}</span>
         </div>
-        <div style="font-size:12px; color:var(--text2); margin-top:4px;">25-minute short bursts with mandatory 10-minute stretch & sensory resets.</div>
+        <div style="font-size:12px; color:var(--text2); margin-top:4px;">${isAr ? 'دفعات تركيز قصيرة (25 دقيقة) تتبعها استراحات تمدد وتصفية ذهنية لمدة 10 دقائق.' : '25-minute short bursts with mandatory 10-minute stretch & sensory resets.'}</div>
       </div>
     </div>
-    <div style="text-align:right;">
-      <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+    <div style="text-align:${isAr ? 'left' : 'right'};">
+      <button class="btn btn-secondary" onclick="closeModal()">${isAr ? 'إغلاق' : 'Close'}</button>
     </div>
   `);
 }
 
 function applySchedulePreset(type) {
+  const isAr = currentLang() === 'ar';
   if (type === 'exam') {
     Store.set('scheduleEvents', [
       { id: 'evt_rev1', title: 'Subject 1 Practice Exam', category: 'Exam', color: '#FF8C42', days: [1, 3, 5], startTime: '09:00', endTime: '11:00', location: 'Quiet Room' },
@@ -8796,7 +8962,7 @@ function applySchedulePreset(type) {
 
   closeModal();
   SFX.bonus();
-  toast('Timetable preset applied!', 'success');
+  toast(isAr ? 'تم تطبيق قالب الجدول بنجاح!' : 'Timetable preset applied!', 'success');
   renderSchedule();
 }
 
